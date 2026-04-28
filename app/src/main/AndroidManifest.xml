@@ -11,8 +11,13 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.ScrumBacklog">
-
-        <activity android:name=".activity.operador.ProgramarPedidoActivity"/>
+        <activity
+            android:name=".activity.operador.RecepcionCombustibleActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activity.distribuidor.PedidosAEntregarActivity"
+            android:exported="false" />
+        <activity android:name=".activity.operador.ProgramarPedidoActivity" />
         <activity
             android:name=".activity.logIn.LoginActivity"
             android:exported="false" /> <!-- Pantalla inicial: Login / Registro -->
@@ -43,9 +48,9 @@
         <activity
             android:name=".activity.operador.InventarioActivity"
             android:exported="false" />
-        <activity android:name=".activity.distribuidor.PedidosPendientesActivity"/>
-        <activity android:name=".activity.cliente.HorariosActivity"/>
-        <activity android:name=".activity.operador.PedidosCanceladosActivity"/>
+        <activity android:name=".activity.distribuidor.PedidosPendientesActivity" />
+        <activity android:name=".activity.cliente.HorariosActivity" />
+        <activity android:name=".activity.operador.PedidosCanceladosActivity" />
         <activity
             android:name=".activity.cliente.ConsultaActivity"
             android:exported="false" /> <!-- Selector de actividades -->

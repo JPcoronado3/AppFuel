@@ -78,6 +78,20 @@
         android:layout_marginBottom="16dp"/>
 
     <Button
+        android:id="@+id/btnPedidosAEntregar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Pedidos A Entregar"
+        android:layout_marginBottom="16dp"/>
+
+    <Button
+        android:id="@+id/btnRecepcionCombustible"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Recepcion Combustible"
+        android:layout_marginBottom="16dp"/>
+
+    <Button
         android:id="@+id/btnCerrarSesion"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

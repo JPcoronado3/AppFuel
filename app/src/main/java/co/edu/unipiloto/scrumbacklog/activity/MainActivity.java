@@ -10,12 +10,14 @@ import co.edu.unipiloto.scrumbacklog.R;
 import co.edu.unipiloto.scrumbacklog.activity.cliente.ConsultaActivity;
 import co.edu.unipiloto.scrumbacklog.activity.cliente.HorariosActivity;
 import co.edu.unipiloto.scrumbacklog.activity.distribuidor.ControlInventarioActivity;
+import co.edu.unipiloto.scrumbacklog.activity.distribuidor.PedidosAEntregarActivity;
 import co.edu.unipiloto.scrumbacklog.activity.distribuidor.PedidosPendientesActivity;
 import co.edu.unipiloto.scrumbacklog.activity.operador.PedidosCanceladosActivity;
 import co.edu.unipiloto.scrumbacklog.activity.operador.ProgramarPedidoActivity;
 import co.edu.unipiloto.scrumbacklog.activity.logIn.LoginActivity;
 import co.edu.unipiloto.scrumbacklog.activity.operador.InventarioActivity;
 import co.edu.unipiloto.scrumbacklog.activity.operador.NotificadorActivity;
+import co.edu.unipiloto.scrumbacklog.activity.operador.RecepcionCombustibleActivity;
 import co.edu.unipiloto.scrumbacklog.activity.operador.ReguladorPreciosActivity;
 import co.edu.unipiloto.scrumbacklog.activity.operador.SalidasActivity;
 
@@ -23,7 +25,7 @@ public class MainActivity extends AppCompatActivity {
 
     Button btnConsulta, btnInventario, btnSalidas, btnNotificador,
             btnRegulador, btnControl, btnProgramarPedido , btnHorarios,
-            btnPedidosPendientes, btnPedidosCancelados ,btnCerrarSesion;
+            btnPedidosPendientes, btnPedidosCancelados, btnPedidosAEntregar, btnRecepcionCombustible, btnCerrarSesion;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +43,8 @@ public class MainActivity extends AppCompatActivity {
         btnPedidosPendientes = findViewById(R.id.btnPedidosPendientes);
         btnHorarios = findViewById(R.id.btnHorarios);
         btnPedidosCancelados = findViewById(R.id.btnPedidosCancelados);
+        btnPedidosAEntregar = findViewById(R.id.btnPedidosAEntregar);
+        btnRecepcionCombustible = findViewById(R.id.btnRecepcionCombustible);
         btnCerrarSesion = findViewById(R.id.btnCerrarSesion);
 
         // 🔥 CONFIGURAR PERMISOS POR ROL
@@ -77,6 +81,13 @@ public class MainActivity extends AppCompatActivity {
         btnPedidosCancelados.setOnClickListener(v ->
                 startActivity(new Intent(this, PedidosCanceladosActivity.class)));
 
+        btnPedidosAEntregar.setOnClickListener(v ->
+                startActivity(new Intent(this, PedidosAEntregarActivity.class)));
+
+        btnRecepcionCombustible.setOnClickListener(v ->
+                startActivity(new Intent(this, RecepcionCombustibleActivity.class)));
+
+
         btnCerrarSesion.setOnClickListener(view -> {
             SharedPreferences prefs = getSharedPreferences("sesion", MODE_PRIVATE);
             prefs.edit().clear().apply();
@@ -106,6 +117,8 @@ public class MainActivity extends AppCompatActivity {
         btnPedidosPendientes.setEnabled(false);
         btnHorarios.setEnabled(false);
         btnPedidosCancelados.setEnabled(false);
+        btnPedidosAEntregar.setEnabled(false);
+        btnRecepcionCombustible.setEnabled(false);
 
         if (rol == null) return;
 
@@ -127,6 +140,7 @@ public class MainActivity extends AppCompatActivity {
                 btnControl.setEnabled(true);
                 btnProgramarPedido.setEnabled(true);
                 btnPedidosCancelados.setEnabled(true);
+                btnRecepcionCombustible.setEnabled(true);
                 break;
 
             case "cliente":
@@ -138,6 +152,7 @@ public class MainActivity extends AppCompatActivity {
                 btnControl.setEnabled(true);
                 btnSalidas.setEnabled(true);
                 btnPedidosPendientes.setEnabled(true);
+                btnPedidosAEntregar.setEnabled(true);
                 break;
         }
     }

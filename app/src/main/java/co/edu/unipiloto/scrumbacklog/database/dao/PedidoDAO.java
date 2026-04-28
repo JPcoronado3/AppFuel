@@ -16,9 +16,13 @@ public class PedidoDAO {
     public Cursor obtenerPedidosPendientes() {
         return db.rawQuery(
                 "SELECT p.id_pedido AS _id, " +
+                        "p.id_pedido, " +
+                        "p.id_ubicacion, " +
+                        "p.id_combustible," +
                         "u.nombre AS ubicacion, " +
                         "c.nombre AS combustible, " +
-                        "p.cantidad, p.fecha " +
+                        "p.cantidad," +
+                        "p.fecha " +
                         "FROM pedido p " +
                         "JOIN ubicacion u ON p.id_ubicacion = u.id_ubicacion " +
                         "JOIN combustible c ON p.id_combustible = c.id_combustible " +
@@ -27,9 +31,33 @@ public class PedidoDAO {
         );
     }
 
-    public void marcarComoEntregado(int idPedido) {
+    public Cursor obtenerPedidosEntregados() {
+        return db.rawQuery(
+                "SELECT p.id_pedido AS _id, " +
+                        "p.id_pedido, " +
+                        "u.nombre AS ubicacion, " +
+                        "c.nombre AS combustible, " +
+                        "p.cantidad, " +
+                        "p.fecha " +
+                        "FROM pedido p " +
+                        "JOIN ubicacion u ON p.id_ubicacion = u.id_ubicacion " +
+                        "JOIN combustible c ON p.id_combustible = c.id_combustible " +
+                        "WHERE p.estado = 'ENTREGADO'",
+                null
+        );
+    }
+
+    public void marcarComoRecibido(int idPedido) {
+        ContentValues values = new ContentValues();
+        values.put("estado", "RECIBIDO");
+
+        db.update("pedido", values, "id_pedido = ?", new String[]{String.valueOf(idPedido)});
+    }
+
+    public void marcarComoEntregado(int idPedido, String fechaEntrega) {
         ContentValues values = new ContentValues();
         values.put("estado", "ENTREGADO");
+        values.put("fecha", fechaEntrega);
 
         db.update("pedido", values, "id_pedido = ?", new String[]{String.valueOf(idPedido)});
     }
@@ -82,5 +110,20 @@ public class PedidoDAO {
         values.put("estado", "PENDIENTE");
 
         db.insert("pedido", null, values);
+    }
+
+    public Cursor obtenerPedidosAceptados() {
+        return db.rawQuery(
+                "SELECT p.id_pedido AS _id, " +
+                        "p.id_pedido, p.id_ubicacion, p.id_combustible, " +
+                        "u.nombre AS ubicacion, " +
+                        "c.nombre AS combustible, " +
+                        "p.cantidad, p.fecha " +
+                        "FROM pedido p " +
+                        "JOIN ubicacion u ON p.id_ubicacion = u.id_ubicacion " +
+                        "JOIN combustible c ON p.id_combustible = c.id_combustible " +
+                        "WHERE p.estado = 'ACEPTADO'",
+                null
+        );
     }
 }
