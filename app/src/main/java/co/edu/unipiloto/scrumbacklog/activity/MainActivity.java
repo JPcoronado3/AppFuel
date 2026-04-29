@@ -150,7 +150,6 @@ public class MainActivity extends AppCompatActivity {
 
             case "distribuidor":
                 btnControl.setEnabled(true);
-                btnSalidas.setEnabled(true);
                 btnPedidosPendientes.setEnabled(true);
                 btnPedidosAEntregar.setEnabled(true);
                 break;
