@@ -48,10 +48,8 @@ public class MainActivity extends AppCompatActivity {
         btnRecepcionCombustible = findViewById(R.id.btnRecepcionCombustible);
         btnCerrarSesion = findViewById(R.id.btnCerrarSesion);
 
-        // 🔥 CONFIGURAR PERMISOS POR ROL
         configurarAccesoPorRol();
 
-        // Navegación
         btnConsulta.setOnClickListener(v ->
                 startActivity(new Intent(this, ConsultaActivity.class)));
 
@@ -99,15 +97,11 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    // =========================
-    // 🔐 CONTROL DE ACCESO POR ROL
-    // =========================
     private void configurarAccesoPorRol() {
 
         SharedPreferences prefs = getSharedPreferences("sesion", MODE_PRIVATE);
         String rol = prefs.getString("rol", "");
 
-        // 🔒 Primero deshabilitamos TODO
         btnConsulta.setVisibility(View.GONE);
         btnConsulta.setEnabled(false);
         btnInventario.setVisibility(View.GONE);

@@ -19,13 +19,11 @@ import co.edu.unipiloto.scrumbacklog.database.dao.UsuarioDAO;
 
 public class ConsultaActivity extends AppCompatActivity {
 
-    // XML
     Spinner spTipoCombustible, spCiudad, spZona;
     Button btnCalcular, btnCalcularGalones, btnVolver;
     TextView txtResultado, txtResultadoGalones;
     EditText etGalones;
 
-    // Base Datos
     DAOFactory factory;
     CombustibleDAO combustibleDAO;
     InventarioDAO inventarioDAO;
@@ -34,8 +32,6 @@ public class ConsultaActivity extends AppCompatActivity {
     UbicacionDAO ubicacionDAO;
     UsuarioDAO usuarioDAO;
 
-
-    // 🔥 SESIÓN
     String rol;
     int idUbicacion;
 
@@ -44,12 +40,10 @@ public class ConsultaActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_consulta);
 
-        // 🔥 SESIÓN
         SharedPreferences prefs = getSharedPreferences("sesion", MODE_PRIVATE);
         rol = prefs.getString("rol", "");
         idUbicacion = prefs.getInt("id_ubicacion", -1);
 
-        // Base Datos
         factory = new DAOFactory(this);
         inventarioDAO = factory.getInventarioDAO();
         combustibleDAO = factory.getCombustibleDAO();
@@ -58,7 +52,6 @@ public class ConsultaActivity extends AppCompatActivity {
         ubicacionDAO = factory.getUbicacionDAO();
         usuarioDAO = factory.getUsuarioDAO();
 
-        // XML
         spTipoCombustible = findViewById(R.id.spTipoCombustible);
         spCiudad = findViewById(R.id.spCiudad);
         spZona = findViewById(R.id.spZona);
@@ -69,7 +62,6 @@ public class ConsultaActivity extends AppCompatActivity {
         txtResultadoGalones = findViewById(R.id.txtResultadoGalones);
         txtResultado = findViewById(R.id.txtResultado);
 
-        // ================= COMBUSTIBLES =================
         ArrayAdapter<String> adapterComb = new ArrayAdapter<>(
                 this,
                 android.R.layout.simple_spinner_item,
@@ -77,7 +69,6 @@ public class ConsultaActivity extends AppCompatActivity {
         );
         spTipoCombustible.setAdapter(adapterComb);
 
-        // ================= CONTROL POR ROL =================
         if (rol.equalsIgnoreCase("OPERADOR")) {
 
             UsuarioDAO usuarioDAO = factory.getUsuarioDAO();
@@ -88,7 +79,6 @@ public class ConsultaActivity extends AppCompatActivity {
                 String ciudadOperador = ubicacion[0];
                 String zonaOperador = ubicacion[1];
 
-                // 🔥 Cargar SOLO su ciudad
                 ArrayList<String> listaCiudad = new ArrayList<>();
                 listaCiudad.add(ciudadOperador);
 
@@ -99,7 +89,6 @@ public class ConsultaActivity extends AppCompatActivity {
                 );
                 spCiudad.setAdapter(adapterCiudad);
 
-                // 🔥 Cargar SOLO su zona
                 ArrayList<String> listaZona = new ArrayList<>();
                 listaZona.add(zonaOperador);
 
@@ -110,13 +99,11 @@ public class ConsultaActivity extends AppCompatActivity {
                 );
                 spZona.setAdapter(adapterZona);
 
-                // 🔒 BLOQUEAR SPINNERS
                 spCiudad.setEnabled(false);
                 spZona.setEnabled(false);
             }
 
         } else {
-            // 🔥 ADMIN y CLIENTE
             ArrayAdapter<String> adapterCiudad = new ArrayAdapter<>(
                     this,
                     android.R.layout.simple_spinner_item,
@@ -143,7 +130,6 @@ public class ConsultaActivity extends AppCompatActivity {
             });
         }
 
-        // ================= BOTÓN PRECIO =================
         btnCalcular.setOnClickListener(view -> {
 
             String tipo = spTipoCombustible.getSelectedItem().toString();
@@ -163,7 +149,6 @@ public class ConsultaActivity extends AppCompatActivity {
             txtResultado.setText("Precio: $" + precio);
         });
 
-        // ================= BOTÓN TOTAL =================
         btnCalcularGalones.setOnClickListener(view -> {
 
             String galonesTexto = etGalones.getText().toString().trim();

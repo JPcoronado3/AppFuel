@@ -15,7 +15,6 @@ public class InventarioDAO {
         this.db = db;
     }
 
-    // CONSULTA POR ZONA
     public double obtenerInventario(String tipo, String ciudad, String zona) {
 
         Cursor cursor = null;
@@ -41,7 +40,6 @@ public class InventarioDAO {
         return resultado;
     }
 
-    // CONSULTA POR CIUDAD
     public double obtenerInventarioTotalPorCiudad(String tipo, String ciudad) {
 
         Cursor cursor = null;
@@ -68,7 +66,6 @@ public class InventarioDAO {
         return resultado;
     }
 
-    // INSERTAR INVENTARIO
     public long insertarInventario(int cantidad, int idCombustible, int idUbicacion) {
 
         ContentValues values = new ContentValues();
@@ -79,7 +76,6 @@ public class InventarioDAO {
         return db.insert("inventario", null, values);
     }
 
-    // HISTORIAL GENERAL
     public List<String> obtenerHistorial() {
 
         List<String> lista = new ArrayList<>();
@@ -111,7 +107,6 @@ public class InventarioDAO {
         return lista;
     }
 
-    // CONSULTA POR UBICACION (OPERADOR)
     public double obtenerInventarioPorUbicacion(String tipo, int idUbicacion) {
 
         Cursor cursor = null;
@@ -136,7 +131,6 @@ public class InventarioDAO {
         return resultado;
     }
 
-    // HISTORIAL POR UBICACION
     public List<String> obtenerHistorialPorUbicacion(int idUbicacion) {
 
         List<String> lista = new ArrayList<>();

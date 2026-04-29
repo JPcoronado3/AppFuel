@@ -20,7 +20,6 @@ public class MovimientoDAO {
         inventarioDAO = new InventarioDAO(db);
     }
 
-    // ENTRADA POR UBICACION (CORRECTO)
     public boolean registrarEntradaPorUbicacion(String tipo, double galones, double precio, String fecha, int idUbic) {
 
         int idComb = combustibleDAO.obtenerIdCombustible(tipo);
@@ -52,7 +51,6 @@ public class MovimientoDAO {
         return false;
     }
 
-    // SALIDA POR UBICACION (CORRECTO)
     public boolean registrarSalidaPorUbicacion(String tipo, double galones, double precio, String fecha, int idUbic) {
 
         int idComb = combustibleDAO.obtenerIdCombustible(tipo);
@@ -87,7 +85,6 @@ public class MovimientoDAO {
         return false;
     }
 
-    // HISTORIAL POR UBICACION (CORREGIDO)
     public ArrayList<String> obtenerMovimientosPorUbicacion(int idUbicacion) {
 
         ArrayList<String> lista = new ArrayList<>();
@@ -115,7 +112,6 @@ public class MovimientoDAO {
         return lista;
     }
 
-    // ALERTA (SIN CAMBIOS)
     private void verificarAlerta(int idComb, int idUbic) {
 
         Cursor cursor = db.rawQuery(

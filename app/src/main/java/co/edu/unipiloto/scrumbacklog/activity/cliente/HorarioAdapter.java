@@ -39,7 +39,6 @@ public class HorarioAdapter extends CursorAdapter {
         tvNombre.setText(nombre);
         tvHorario.setText("Horario: " + apertura + " - " + cierre);
 
-        // 🔥 Lógica de abierto/cerrado
         try {
             SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
             Date ahora = sdf.parse(sdf.format(new Date()));

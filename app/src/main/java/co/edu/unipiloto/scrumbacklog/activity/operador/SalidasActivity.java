@@ -18,14 +18,12 @@ import co.edu.unipiloto.scrumbacklog.database.dao.UsuarioDAO;
 
 public class SalidasActivity extends AppCompatActivity {
 
-    // XML
     TextView txtInventarioDisponible;
     Spinner spTipoCombustible, spCiudad, spZona;
     EditText etSalida;
     Button btnRetirar, btnVolver;
     ListView listHistorial;
 
-    // Base Datos
     DAOFactory factory;
     InventarioDAO inventarioDAO;
     MovimientoDAO movimientoDAO;
@@ -36,7 +34,6 @@ public class SalidasActivity extends AppCompatActivity {
     ArrayList<String> historial = new ArrayList<>();
     ArrayAdapter<String> adapterHistorial;
 
-    // SESIÓN
     String rol;
     int idUbicacion;
 
@@ -179,7 +176,7 @@ public class SalidasActivity extends AppCompatActivity {
         }
 
         // =====================================================
-        // 🔥 BLOQUEO DISTRIBUIDOR (NUEVO)
+        // BLOQUEO DISTRIBUIDOR (NUEVO)
         // =====================================================
         if (rol.equalsIgnoreCase("DISTRIBUIDOR")) {
 

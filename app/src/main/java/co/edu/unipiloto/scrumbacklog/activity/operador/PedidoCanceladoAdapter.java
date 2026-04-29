@@ -32,10 +32,8 @@ public class PedidoCanceladoAdapter extends CursorAdapter {
         Button btnReagendar = view.findViewById(R.id.btnReagendar);
         Button btnVolver = view.findViewById(R.id.btnVolver);
 
-        // ✅ ID correcto
         int id = cursor.getInt(cursor.getColumnIndexOrThrow("_id"));
 
-        // ✅ AHORA SON STRINGS (no IDs)
         String ubicacion = cursor.getString(cursor.getColumnIndexOrThrow("ubicacion"));
         String combustible = cursor.getString(cursor.getColumnIndexOrThrow("combustible"));
 
@@ -51,7 +49,6 @@ public class PedidoCanceladoAdapter extends CursorAdapter {
 
         tvMotivo.setText("Motivo: " + motivo);
 
-        // 🔥 BOTÓN REAGENDAR
         btnReagendar.setOnClickListener(v ->  {
             Intent intent = new Intent(context, ProgramarPedidoActivity.class);
 
@@ -63,7 +60,6 @@ public class PedidoCanceladoAdapter extends CursorAdapter {
             context.startActivity(intent);
         });
 
-        // ⚠️ ESTE BOTÓN ES PROBLEMÁTICO AQUÍ
         btnVolver.setOnClickListener(v -> {
             Intent intent = new Intent(context, MainActivity.class);
             context.startActivity(intent);

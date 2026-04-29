@@ -114,7 +114,6 @@ public class RegisterActivity extends AppCompatActivity {
             return;
         }
 
-        // 🔹 Genero
         int selectedId = rgGenero.getCheckedRadioButtonId();
         String genero = "";
 
@@ -123,7 +122,6 @@ public class RegisterActivity extends AppCompatActivity {
             genero = rb.getText().toString();
         }
 
-        // 🔹 Obtener ID estación
         String nombreEstacion = spinnerEstacion.getSelectedItem().toString();
 
         Cursor cursor = db.rawQuery(
@@ -143,10 +141,8 @@ public class RegisterActivity extends AppCompatActivity {
             return;
         }
 
-        // 🔥 ROL CORRECTO (CONSISTENTE)
         String rol = "operador";
 
-        // 🔥 CREAR OBJETO USUARIO
         Usuario nuevo = new Usuario();
         nuevo.setNombre(nombre);
         nuevo.setUsuario(usuarioTxt);
@@ -159,7 +155,6 @@ public class RegisterActivity extends AppCompatActivity {
         nuevo.setGenero(genero);
         nuevo.setVerificado(1); // opcional
 
-        // 🔥 USAR DAO
         long resultado = usuarioDAO.insertarUsuario(nuevo);
 
         if (resultado != -1) {

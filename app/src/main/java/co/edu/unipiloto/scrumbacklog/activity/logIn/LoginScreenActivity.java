@@ -21,7 +21,6 @@ public class LoginScreenActivity extends AppCompatActivity {
         btnIniciarSesion = findViewById(R.id.btnIniciarSesion);
         btnRegistrarse = findViewById(R.id.btnRegistrarse);
 
-        // Abrir LoginActivity
         btnIniciarSesion.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -32,7 +31,6 @@ public class LoginScreenActivity extends AppCompatActivity {
             }
         });
 
-        // Abrir RegisterActivity
         btnRegistrarse.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

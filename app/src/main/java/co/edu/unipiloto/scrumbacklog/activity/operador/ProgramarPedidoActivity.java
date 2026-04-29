@@ -35,11 +35,9 @@ public class ProgramarPedidoActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_programar_pedido);
 
-        // 🔥 SESIÓN (igual que tu otra Activity)
         SharedPreferences prefs = getSharedPreferences("sesion", MODE_PRIVATE);
         idUbicacionUsuario = prefs.getInt("id_ubicacion", -1);
 
-        // Referencias UI
         spUbicacion = findViewById(R.id.spUbicacion);
         spCombustible = findViewById(R.id.spCombustible);
 
@@ -50,17 +48,14 @@ public class ProgramarPedidoActivity extends AppCompatActivity {
         btnFecha = findViewById(R.id.btnSeleccionarFecha);
         btnVolver = findViewById(R.id.btnVolver);
 
-        // Base de datos
         dbHelper = new DatabaseHelper(this);
         db = dbHelper.getWritableDatabase();
         pedidoDAO = new PedidoDAO(db);
 
         cargarSpinners();
 
-        // Selector de fecha
         btnFecha.setOnClickListener(v -> mostrarDatePicker());
 
-        // Guardar pedido
         btnGuardar.setOnClickListener(v -> guardarPedido());
 
         btnVolver.setOnClickListener(v -> {
@@ -72,7 +67,7 @@ public class ProgramarPedidoActivity extends AppCompatActivity {
     private void cargarSpinners() {
 
         // =========================
-        // 🔥 UBICACIÓN BLOQUEADA
+        // UBICACIÓN BLOQUEADA
         // =========================
         String nombreEstacion = obtenerNombreEstacion(idUbicacionUsuario);
 
@@ -83,7 +78,7 @@ public class ProgramarPedidoActivity extends AppCompatActivity {
         );
 
         spUbicacion.setAdapter(adapterUbicacion);
-        spUbicacion.setEnabled(false); // 🔥 NO SE PUEDE CAMBIAR
+        spUbicacion.setEnabled(false);
 
         // =========================
         // COMBUSTIBLE NORMAL
@@ -103,7 +98,6 @@ public class ProgramarPedidoActivity extends AppCompatActivity {
         spCombustible.setAdapter(adapterCombustible);
     }
 
-    // 🔥 TRAER NOMBRE REAL DESDE BD
     private String obtenerNombreEstacion(int idUbicacion) {
 
         Cursor cursor = db.rawQuery(

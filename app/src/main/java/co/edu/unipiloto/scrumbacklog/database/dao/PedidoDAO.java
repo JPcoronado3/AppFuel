@@ -12,7 +12,6 @@ public class PedidoDAO {
         this.db = db;
     }
 
-    // ✅ PEDIDOS PENDIENTES (CON JOIN Y SIN *)
     public Cursor obtenerPedidosPendientes() {
         return db.rawQuery(
                 "SELECT p.id_pedido AS _id, " +
@@ -95,7 +94,6 @@ public class PedidoDAO {
         db.update("pedido", values, "id_pedido = ?", new String[]{String.valueOf(idPedido)});
     }
 
-    // ✅ CANCELADOS (CORREGIDO TAMBIÉN)
     public Cursor obtenerPedidosCancelados() {
         return db.rawQuery(
                 "SELECT p.id_pedido AS _id, " +

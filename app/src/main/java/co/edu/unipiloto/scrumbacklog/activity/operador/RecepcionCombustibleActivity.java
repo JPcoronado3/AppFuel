@@ -31,7 +31,6 @@ public class RecepcionCombustibleActivity extends AppCompatActivity {
 
         listView = findViewById(R.id.listViewRecepcion);
 
-        // 🔥 OBTENER UBICACIÓN DEL USUARIO
         SharedPreferences prefs = getSharedPreferences("sesion", MODE_PRIVATE);
         idUbicacionUsuario = prefs.getInt("id_ubicacion", -1);
 
@@ -44,8 +43,6 @@ public class RecepcionCombustibleActivity extends AppCompatActivity {
     }
 
     private void cargarPedidos() {
-
-        // 🔥 FILTRADO POR UBICACIÓN
         Cursor cursor = pedidoDAO.obtenerPedidosEntregadosPorUbicacion(idUbicacionUsuario);
 
         adapter = new RecepcionAdapter(this, cursor, pedidoDAO, idUbicacionUsuario);

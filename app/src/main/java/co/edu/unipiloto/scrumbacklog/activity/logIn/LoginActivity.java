@@ -58,7 +58,6 @@ public class LoginActivity extends AppCompatActivity {
 
             if (usuario != null) {
 
-                // 🔥 GUARDAR SESIÓN
                 SharedPreferences prefs = getSharedPreferences("sesion", MODE_PRIVATE);
                 SharedPreferences.Editor editor = prefs.edit();
 
@@ -70,7 +69,6 @@ public class LoginActivity extends AppCompatActivity {
 
                 Toast.makeText(this, "Login exitoso", Toast.LENGTH_SHORT).show();
 
-                // ✅ SIEMPRE VA AL MAIN
                 Intent intent = new Intent(this, MainActivity.class);
                 startActivity(intent);
                 finish();

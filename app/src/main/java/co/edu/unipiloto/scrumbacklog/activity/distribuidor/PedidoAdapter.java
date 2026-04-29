@@ -45,7 +45,6 @@ public class PedidoAdapter extends CursorAdapter {
                 "\nCantidad: " + cantidad +
                 "\nFecha: " + fecha);
 
-        // ✅ ACEPTAR
         btnAceptar.setOnClickListener(v -> {
             pedidoDAO.aceptarPedido(id); // 🔥 CAMBIO AQUÍ
 
@@ -55,7 +54,6 @@ public class PedidoAdapter extends CursorAdapter {
             changeCursor(nuevoCursor);
         });
 
-        // ❌ CANCELAR
         btnCancelar.setOnClickListener(v -> {
 
             String motivo = etMotivo.getText().toString();

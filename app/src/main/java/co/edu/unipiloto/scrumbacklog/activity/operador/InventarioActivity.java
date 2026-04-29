@@ -27,7 +27,6 @@ public class InventarioActivity extends AppCompatActivity {
     Button btnAgregar, btnVolver;
     TextView txtInventarioTotal, txtInventarioDiesel, txtInventarioCorriente, txtInventarioExtra;
 
-    // Base Datos
     DAOFactory factory;
     CombustibleDAO combustibleDAO;
     InventarioDAO inventarioDAO;
@@ -35,10 +34,8 @@ public class InventarioActivity extends AppCompatActivity {
     PrecioDAO precioDAO;
     UbicacionDAO ubicacionDAO;
 
-    // 🔥 NUEVO
     UsuarioDAO usuarioDAO;
 
-    // 🔥 SESIÓN
     String rol;
     int idUbicacion;
 
@@ -47,12 +44,10 @@ public class InventarioActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_inventario);
 
-        // 🔥 SESIÓN
         SharedPreferences prefs = getSharedPreferences("sesion", MODE_PRIVATE);
         rol = prefs.getString("rol", "");
         idUbicacion = prefs.getInt("id_ubicacion", -1);
 
-        // BASE DE DATOS
         factory = new DAOFactory(this);
         inventarioDAO = factory.getInventarioDAO();
         combustibleDAO = factory.getCombustibleDAO();
@@ -61,8 +56,6 @@ public class InventarioActivity extends AppCompatActivity {
         ubicacionDAO = factory.getUbicacionDAO();
         usuarioDAO = factory.getUsuarioDAO();
 
-
-        // XML
         spCombustible = findViewById(R.id.spCombustible);
         spCiudad = findViewById(R.id.spCiudad);
         spZona = findViewById(R.id.spZona);
@@ -77,7 +70,7 @@ public class InventarioActivity extends AppCompatActivity {
         cargarCombustiblesSpinner();
 
         // =========================
-        // 🔥 CONTROL POR ROL
+        // CONTROL POR ROL
         // =========================
         if (rol.equalsIgnoreCase("ADMIN")) {
 
@@ -96,15 +89,12 @@ public class InventarioActivity extends AppCompatActivity {
             });
 
         } else if (rol.equalsIgnoreCase("OPERADOR")) {
-
-            // 🔥 OBTENER SU UBICACIÓN REAL
             String[] ubicacion = usuarioDAO.obtenerUbicacionUsuario(idUbicacion);
 
             if (ubicacion != null) {
                 String ciudad = ubicacion[0];
                 String zona = ubicacion[1];
 
-                // 🔥 CARGAR SPINNER CON UN SOLO VALOR
                 ArrayList<String> ciudadList = new ArrayList<>();
                 ciudadList.add(ciudad);
 
@@ -119,7 +109,6 @@ public class InventarioActivity extends AppCompatActivity {
                         this, android.R.layout.simple_spinner_item, zonaList);
                 spZona.setAdapter(zonaAdapter);
 
-                // 🔥 BLOQUEAR SELECCIÓN (pero visibles)
                 spCiudad.setEnabled(false);
                 spZona.setEnabled(false);
             }

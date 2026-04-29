@@ -58,11 +58,9 @@ public class RecepcionAdapter extends CursorAdapter {
 
             Toast.makeText(context, "Recepción confirmada", Toast.LENGTH_SHORT).show();
 
-            // 🔥 RECARGAR SOLO LOS DE SU ESTACIÓN
             Cursor nuevoCursor = pedidoDAO.obtenerPedidosEntregadosPorUbicacion(idUbicacionUsuario);
             changeCursor(nuevoCursor);
 
-            // 👉 REDIRECCIÓN
             Intent intent = new Intent(context, InventarioActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             context.startActivity(intent);
