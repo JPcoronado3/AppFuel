@@ -3,6 +3,7 @@ package co.edu.unipiloto.scrumbacklog.activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -107,17 +108,29 @@ public class MainActivity extends AppCompatActivity {
         String rol = prefs.getString("rol", "");
 
         // 🔒 Primero deshabilitamos TODO
+        btnConsulta.setVisibility(View.GONE);
         btnConsulta.setEnabled(false);
+        btnInventario.setVisibility(View.GONE);
         btnInventario.setEnabled(false);
+        btnSalidas.setVisibility(View.GONE);
         btnSalidas.setEnabled(false);
+        btnNotificador.setVisibility(View.GONE);
         btnNotificador.setEnabled(false);
+        btnRegulador.setVisibility(View.GONE);
         btnRegulador.setEnabled(false);
+        btnControl.setVisibility(View.GONE);
         btnControl.setEnabled(false);
+        btnProgramarPedido.setVisibility(View.GONE);
         btnProgramarPedido.setEnabled(false);
+        btnPedidosPendientes.setVisibility(View.GONE);
         btnPedidosPendientes.setEnabled(false);
+        btnHorarios.setVisibility(View.GONE);
         btnHorarios.setEnabled(false);
+        btnPedidosCancelados.setVisibility(View.GONE);
         btnPedidosCancelados.setEnabled(false);
+        btnPedidosAEntregar.setVisibility(View.GONE);
         btnPedidosAEntregar.setEnabled(false);
+        btnRecepcionCombustible.setVisibility(View.GONE);
         btnRecepcionCombustible.setEnabled(false);
 
         if (rol == null) return;
@@ -125,32 +138,52 @@ public class MainActivity extends AppCompatActivity {
         switch (rol) {
 
             case "admin":
+                btnConsulta.setVisibility(View.VISIBLE);
                 btnConsulta.setEnabled(true);
+                btnInventario.setVisibility(View.VISIBLE);
                 btnInventario.setEnabled(true);
+                btnNotificador.setVisibility(View.VISIBLE);
                 btnNotificador.setEnabled(true);
+                btnControl.setVisibility(View.VISIBLE);
                 btnControl.setEnabled(true);
                 break;
 
             case "operador": // estación de servicio
+                btnConsulta.setVisibility(View.VISIBLE);
                 btnConsulta.setEnabled(true);
+                btnInventario.setVisibility(View.VISIBLE);
                 btnInventario.setEnabled(true);
+                btnSalidas.setVisibility(View.VISIBLE);
                 btnSalidas.setEnabled(true);
+                btnNotificador.setVisibility(View.VISIBLE);
                 btnNotificador.setEnabled(true);
+                btnRegulador.setVisibility(View.VISIBLE);
                 btnRegulador.setEnabled(true);
+                btnControl.setVisibility(View.VISIBLE);
                 btnControl.setEnabled(true);
+                btnProgramarPedido.setVisibility(View.VISIBLE);
                 btnProgramarPedido.setEnabled(true);
+                btnPedidosCancelados.setVisibility(View.VISIBLE);
                 btnPedidosCancelados.setEnabled(true);
+                btnRecepcionCombustible.setVisibility(View.VISIBLE);
                 btnRecepcionCombustible.setEnabled(true);
                 break;
 
             case "cliente":
+                btnConsulta.setVisibility(View.VISIBLE);
                 btnConsulta.setEnabled(true);
+                btnHorarios.setVisibility(View.VISIBLE);
                 btnHorarios.setEnabled(true);
                 break;
 
             case "distribuidor":
+                btnControl.setVisibility(View.VISIBLE);
                 btnControl.setEnabled(true);
+                btnSalidas.setVisibility(View.VISIBLE);
+                btnSalidas.setEnabled(true);
+                btnPedidosPendientes.setVisibility(View.VISIBLE);
                 btnPedidosPendientes.setEnabled(true);
+                btnPedidosAEntregar.setVisibility(View.VISIBLE);
                 btnPedidosAEntregar.setEnabled(true);
                 break;
         }
