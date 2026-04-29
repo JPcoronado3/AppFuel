@@ -2,6 +2,8 @@ package co.edu.unipiloto.scrumbacklog.activity.cliente;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.*;
 import androidx.appcompat.app.AppCompatActivity;
@@ -16,6 +18,8 @@ import co.edu.unipiloto.scrumbacklog.database.dao.MovimientoDAO;
 import co.edu.unipiloto.scrumbacklog.database.dao.PrecioDAO;
 import co.edu.unipiloto.scrumbacklog.database.dao.UbicacionDAO;
 import co.edu.unipiloto.scrumbacklog.database.dao.UsuarioDAO;
+import android.widget.*;
+import androidx.appcompat.widget.Toolbar;
 
 public class ConsultaActivity extends AppCompatActivity {
 
@@ -39,6 +43,16 @@ public class ConsultaActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_consulta);
+
+        // ===== TOOLBAR =====
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setTitle("Consulta");
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
+        // ===================
 
         SharedPreferences prefs = getSharedPreferences("sesion", MODE_PRIVATE);
         rol = prefs.getString("rol", "");
@@ -71,7 +85,6 @@ public class ConsultaActivity extends AppCompatActivity {
 
         if (rol.equalsIgnoreCase("OPERADOR")) {
 
-            UsuarioDAO usuarioDAO = factory.getUsuarioDAO();
             String[] ubicacion = usuarioDAO.obtenerUbicacionUsuario(idUbicacion);
 
             if (ubicacion != null) {
@@ -82,47 +95,42 @@ public class ConsultaActivity extends AppCompatActivity {
                 ArrayList<String> listaCiudad = new ArrayList<>();
                 listaCiudad.add(ciudadOperador);
 
-                ArrayAdapter<String> adapterCiudad = new ArrayAdapter<>(
+                spCiudad.setAdapter(new ArrayAdapter<>(
                         this,
                         android.R.layout.simple_spinner_item,
                         listaCiudad
-                );
-                spCiudad.setAdapter(adapterCiudad);
+                ));
 
                 ArrayList<String> listaZona = new ArrayList<>();
                 listaZona.add(zonaOperador);
 
-                ArrayAdapter<String> adapterZona = new ArrayAdapter<>(
+                spZona.setAdapter(new ArrayAdapter<>(
                         this,
                         android.R.layout.simple_spinner_item,
                         listaZona
-                );
-                spZona.setAdapter(adapterZona);
+                ));
 
                 spCiudad.setEnabled(false);
                 spZona.setEnabled(false);
             }
 
         } else {
-            ArrayAdapter<String> adapterCiudad = new ArrayAdapter<>(
+            spCiudad.setAdapter(new ArrayAdapter<>(
                     this,
                     android.R.layout.simple_spinner_item,
                     ubicacionDAO.obtenerCiudades()
-            );
-            spCiudad.setAdapter(adapterCiudad);
+            ));
 
             spCiudad.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 @Override
                 public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                     String ciudad = spCiudad.getSelectedItem().toString();
 
-                    ArrayAdapter<String> adapterZona = new ArrayAdapter<>(
+                    spZona.setAdapter(new ArrayAdapter<>(
                             ConsultaActivity.this,
                             android.R.layout.simple_spinner_item,
                             ubicacionDAO.obtenerZonas(ciudad)
-                    );
-
-                    spZona.setAdapter(adapterZona);
+                    ));
                 }
 
                 @Override
@@ -136,12 +144,9 @@ public class ConsultaActivity extends AppCompatActivity {
             double precio;
 
             if (rol.equalsIgnoreCase("ADMIN")) {
-
                 String ciudad = spCiudad.getSelectedItem().toString();
                 String zona = spZona.getSelectedItem().toString();
-
                 precio = precioDAO.obtenerPrecioZona(tipo, ciudad, zona);
-
             } else {
                 precio = precioDAO.obtenerPrecioPorUbicacion(tipo, idUbicacion);
             }
@@ -164,21 +169,46 @@ public class ConsultaActivity extends AppCompatActivity {
             double precio;
 
             if (rol.equalsIgnoreCase("ADMIN")) {
-
                 String ciudad = spCiudad.getSelectedItem().toString();
                 String zona = spZona.getSelectedItem().toString();
-
                 precio = precioDAO.obtenerPrecioZona(tipo, ciudad, zona);
-
             } else {
                 precio = precioDAO.obtenerPrecioPorUbicacion(tipo, idUbicacion);
             }
 
-            double total = galones * precio;
-
-            txtResultadoGalones.setText("Total: $" + total);
+            txtResultadoGalones.setText("Total: $" + (galones * precio));
         });
 
         btnVolver.setOnClickListener(view -> finish());
+    }
+
+    // ===== FLECHA ← TOOLBAR =====
+    @Override
+    public boolean onSupportNavigateUp() {
+        finish();
+        return true;
+    }
+
+    // ===== MENÚ =====
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_consulta, menu);
+        return true;
+    }
+
+    // ===== ACCIONES =====
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        if (item.getItemId() == R.id.action_info) {
+            Toast.makeText(this, "Consulta de precios", Toast.LENGTH_SHORT).show();
+            return true;
+
+        } else if (item.getItemId() == R.id.action_notificar) {
+            Toast.makeText(this, "Notificación generada", Toast.LENGTH_SHORT).show();
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 }

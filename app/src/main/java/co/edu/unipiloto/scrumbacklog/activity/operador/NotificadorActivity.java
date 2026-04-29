@@ -4,15 +4,17 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.widget.*;
 import androidx.appcompat.app.AppCompatActivity;
-
 import java.util.ArrayList;
 import java.util.Collections;
-
 import co.edu.unipiloto.scrumbacklog.R;
 import co.edu.unipiloto.scrumbacklog.database.DAOFactory;
 import co.edu.unipiloto.scrumbacklog.database.dao.InventarioDAO;
 import co.edu.unipiloto.scrumbacklog.database.dao.UbicacionDAO;
 import co.edu.unipiloto.scrumbacklog.database.dao.UsuarioDAO;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.widget.*;
+import androidx.appcompat.widget.Toolbar;
 
 public class NotificadorActivity extends AppCompatActivity {
 
@@ -32,6 +34,16 @@ public class NotificadorActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_notificador);
+
+        // ===== TOOLBAR =====
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setTitle("Notificador");
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
+        // ===================
 
         SharedPreferences prefs = getSharedPreferences("sesion", MODE_PRIVATE);
         rol = prefs.getString("rol", "");
@@ -54,6 +66,37 @@ public class NotificadorActivity extends AppCompatActivity {
         btnVolver.setOnClickListener(v -> finish());
     }
 
+    // ===== BOTÓN ← TOOLBAR =====
+    @Override
+    public boolean onSupportNavigateUp() {
+        finish();
+        return true;
+    }
+
+    // ===== MENÚ TOOLBAR =====
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_notificador, menu);
+        return true;
+    }
+
+    // ===== ACCIONES TOOLBAR =====
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        if (item.getItemId() == R.id.action_info) {
+            Toast.makeText(this, "Verifica niveles críticos de inventario", Toast.LENGTH_SHORT).show();
+            return true;
+
+        } else if (item.getItemId() == R.id.action_alerta) {
+            verificarInventario();
+            Toast.makeText(this, "Alerta generada", Toast.LENGTH_SHORT).show();
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
     // =====================================================
     // CONTROL POR ROL
     // =====================================================
@@ -64,9 +107,6 @@ public class NotificadorActivity extends AppCompatActivity {
             return;
         }
 
-        // =========================
-        // ADMIN → acceso total
-        // =========================
         if (rol.equalsIgnoreCase("ADMIN")) {
 
             cargarCiudadesSpinner();
@@ -85,29 +125,23 @@ public class NotificadorActivity extends AppCompatActivity {
             return;
         }
 
-        // =========================
-        // OPERADOR → solo su estación
-        // =========================
         if (rol.equalsIgnoreCase("OPERADOR")) {
 
             String[] ubicacion = usuarioDAO.obtenerUbicacionUsuario(idUbicacion);
 
             if (ubicacion != null) {
 
-                String ciudad = ubicacion[0];
-                String zona = ubicacion[1];
-
                 spCiudad.setAdapter(new ArrayAdapter<>(
                         this,
                         android.R.layout.simple_spinner_dropdown_item,
-                        Collections.singletonList(ciudad)
+                        Collections.singletonList(ubicacion[0])
                 ));
                 spCiudad.setEnabled(false);
 
                 spZona.setAdapter(new ArrayAdapter<>(
                         this,
                         android.R.layout.simple_spinner_dropdown_item,
-                        Collections.singletonList(zona)
+                        Collections.singletonList(ubicacion[1])
                 ));
                 spZona.setEnabled(false);
             }
@@ -147,17 +181,9 @@ public class NotificadorActivity extends AppCompatActivity {
 
         mensaje.append("📍 ").append(ciudad).append(" - ").append(zona).append("\n\n");
 
-        if (diesel < 1000) {
-            mensaje.append("⚠ Diesel crítico: ").append(diesel).append("\n");
-        }
-
-        if (corriente < 1000) {
-            mensaje.append("⚠ Corriente crítico: ").append(corriente).append("\n");
-        }
-
-        if (extra < 1000) {
-            mensaje.append("⚠ Extra crítico: ").append(extra).append("\n");
-        }
+        if (diesel < 1000) mensaje.append("⚠ Diesel crítico: ").append(diesel).append("\n");
+        if (corriente < 1000) mensaje.append("⚠ Corriente crítico: ").append(corriente).append("\n");
+        if (extra < 1000) mensaje.append("⚠ Extra crítico: ").append(extra).append("\n");
 
         if (diesel >= 1000 && corriente >= 1000 && extra >= 1000) {
             mensaje.append("✔ Inventario en niveles normales");
@@ -167,12 +193,11 @@ public class NotificadorActivity extends AppCompatActivity {
     }
 
     // =====================================================
-    // SPINNERS ADMIN
+    // SPINNERS
     // =====================================================
     private void cargarCiudadesSpinner() {
 
         ArrayList<String> ciudades = ubicacionDAO.obtenerCiudades();
-
         if (ciudades == null) ciudades = new ArrayList<>();
 
         spCiudad.setAdapter(new ArrayAdapter<>(
@@ -185,7 +210,6 @@ public class NotificadorActivity extends AppCompatActivity {
     private void cargarZonasSpinner(String ciudad) {
 
         ArrayList<String> zonas = ubicacionDAO.obtenerZonas(ciudad);
-
         if (zonas == null) zonas = new ArrayList<>();
 
         spZona.setAdapter(new ArrayAdapter<>(

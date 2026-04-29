@@ -2,6 +2,8 @@ package co.edu.unipiloto.scrumbacklog.activity.operador;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.*;
 import androidx.appcompat.app.AppCompatActivity;
@@ -19,6 +21,9 @@ import co.edu.unipiloto.scrumbacklog.database.dao.MovimientoDAO;
 import co.edu.unipiloto.scrumbacklog.database.dao.PrecioDAO;
 import co.edu.unipiloto.scrumbacklog.database.dao.UbicacionDAO;
 import co.edu.unipiloto.scrumbacklog.database.dao.UsuarioDAO;
+import android.widget.*;
+import androidx.appcompat.widget.Toolbar;
+
 
 public class InventarioActivity extends AppCompatActivity {
 
@@ -33,7 +38,6 @@ public class InventarioActivity extends AppCompatActivity {
     MovimientoDAO movimientoDAO;
     PrecioDAO precioDAO;
     UbicacionDAO ubicacionDAO;
-
     UsuarioDAO usuarioDAO;
 
     String rol;
@@ -43,6 +47,16 @@ public class InventarioActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_inventario);
+
+        // ===== TOOLBAR =====
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setTitle("Inventario");
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
+        // ===================
 
         SharedPreferences prefs = getSharedPreferences("sesion", MODE_PRIVATE);
         rol = prefs.getString("rol", "");
@@ -69,9 +83,6 @@ public class InventarioActivity extends AppCompatActivity {
 
         cargarCombustiblesSpinner();
 
-        // =========================
-        // CONTROL POR ROL
-        // =========================
         if (rol.equalsIgnoreCase("ADMIN")) {
 
             cargarCiudadesSpinner();
@@ -89,25 +100,21 @@ public class InventarioActivity extends AppCompatActivity {
             });
 
         } else if (rol.equalsIgnoreCase("OPERADOR")) {
+
             String[] ubicacion = usuarioDAO.obtenerUbicacionUsuario(idUbicacion);
 
             if (ubicacion != null) {
-                String ciudad = ubicacion[0];
-                String zona = ubicacion[1];
-
                 ArrayList<String> ciudadList = new ArrayList<>();
-                ciudadList.add(ciudad);
+                ciudadList.add(ubicacion[0]);
 
-                ArrayAdapter<String> ciudadAdapter = new ArrayAdapter<>(
-                        this, android.R.layout.simple_spinner_item, ciudadList);
-                spCiudad.setAdapter(ciudadAdapter);
+                spCiudad.setAdapter(new ArrayAdapter<>(this,
+                        android.R.layout.simple_spinner_item, ciudadList));
 
                 ArrayList<String> zonaList = new ArrayList<>();
-                zonaList.add(zona);
+                zonaList.add(ubicacion[1]);
 
-                ArrayAdapter<String> zonaAdapter = new ArrayAdapter<>(
-                        this, android.R.layout.simple_spinner_item, zonaList);
-                spZona.setAdapter(zonaAdapter);
+                spZona.setAdapter(new ArrayAdapter<>(this,
+                        android.R.layout.simple_spinner_item, zonaList));
 
                 spCiudad.setEnabled(false);
                 spZona.setEnabled(false);
@@ -120,9 +127,39 @@ public class InventarioActivity extends AppCompatActivity {
         btnVolver.setOnClickListener(view -> finish());
     }
 
-    // =========================
-    // REGISTRAR ENTRADA
-    // =========================
+    // ===== TOOLBAR BACK =====
+    @Override
+    public boolean onSupportNavigateUp() {
+        finish();
+        return true;
+    }
+
+    // ===== MENÚ TOOLBAR =====
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_inventario, menu);
+        return true;
+    }
+
+    // ===== ACCIONES TOOLBAR =====
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        if (item.getItemId() == R.id.action_info) {
+            Toast.makeText(this, "Gestión de inventario de combustible", Toast.LENGTH_SHORT).show();
+            return true;
+
+        } else if (item.getItemId() == R.id.action_actualizar) {
+            actualizarUI();
+            Toast.makeText(this, "Inventario actualizado", Toast.LENGTH_SHORT).show();
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    // ========================= LÓGICA ORIGINAL =========================
+
     private void registrarEntrada() {
 
         if (spCombustible.getSelectedItem() == null) {
@@ -157,23 +194,12 @@ public class InventarioActivity extends AppCompatActivity {
             String zona = spZona.getSelectedItem().toString();
 
             double precio = precioDAO.obtenerPrecioZona(tipo, ciudad, zona);
-
             int idUbic = ubicacionDAO.obtenerIdUbicacion(ciudad, zona);
 
-            resultado = movimientoDAO.registrarEntradaPorUbicacion(
-                    tipo,
-                    cantidad,
-                    precio,
-                    fecha,
-                    idUbic
-            );
+            resultado = movimientoDAO.registrarEntradaPorUbicacion(tipo, cantidad, precio, fecha, idUbic);
+
         } else {
-
-            double precio = 0;
-
-            resultado = movimientoDAO.registrarEntradaPorUbicacion(
-                    tipo, cantidad, precio, fecha, idUbicacion
-            );
+            resultado = movimientoDAO.registrarEntradaPorUbicacion(tipo, cantidad, 0, fecha, idUbicacion);
         }
 
         if (resultado) {
@@ -221,23 +247,20 @@ public class InventarioActivity extends AppCompatActivity {
     }
 
     private void cargarCombustiblesSpinner() {
-        ArrayList<String> lista = combustibleDAO.obtenerCombustibles();
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this,
-                android.R.layout.simple_spinner_item, lista);
-        spCombustible.setAdapter(adapter);
+        spCombustible.setAdapter(new ArrayAdapter<>(this,
+                android.R.layout.simple_spinner_item,
+                combustibleDAO.obtenerCombustibles()));
     }
 
     private void cargarCiudadesSpinner() {
-        ArrayList<String> lista = ubicacionDAO.obtenerCiudades();
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this,
-                android.R.layout.simple_spinner_item, lista);
-        spCiudad.setAdapter(adapter);
+        spCiudad.setAdapter(new ArrayAdapter<>(this,
+                android.R.layout.simple_spinner_item,
+                ubicacionDAO.obtenerCiudades()));
     }
 
     private void cargarZonasSpinner(String ciudad) {
-        ArrayList<String> lista = ubicacionDAO.obtenerZonas(ciudad);
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this,
-                android.R.layout.simple_spinner_item, lista);
-        spZona.setAdapter(adapter);
+        spZona.setAdapter(new ArrayAdapter<>(this,
+                android.R.layout.simple_spinner_item,
+                ubicacionDAO.obtenerZonas(ciudad)));
     }
 }

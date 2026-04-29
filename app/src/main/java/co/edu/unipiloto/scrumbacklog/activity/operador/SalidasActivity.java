@@ -15,6 +15,10 @@ import co.edu.unipiloto.scrumbacklog.database.dao.MovimientoDAO;
 import co.edu.unipiloto.scrumbacklog.database.dao.PrecioDAO;
 import co.edu.unipiloto.scrumbacklog.database.dao.UbicacionDAO;
 import co.edu.unipiloto.scrumbacklog.database.dao.UsuarioDAO;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.widget.*;
+import androidx.appcompat.widget.Toolbar;
 
 public class SalidasActivity extends AppCompatActivity {
 
@@ -41,6 +45,15 @@ public class SalidasActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_salidas);
+
+        // ===== TOOLBAR =====
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setTitle("Salidas de Combustible");
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
 
         SharedPreferences prefs = getSharedPreferences("sesion", MODE_PRIVATE);
         rol = prefs.getString("rol", "");
@@ -73,9 +86,6 @@ public class SalidasActivity extends AppCompatActivity {
 
         configurarPorRol();
 
-        // =========================
-        // ADMIN / DISTRIBUIDOR / OPERADOR CIUDADES
-        // =========================
         if (!rol.equalsIgnoreCase("OPERADOR")) {
 
             ArrayList<String> ciudades = ubicacionDAO.obtenerCiudades();
@@ -89,9 +99,7 @@ public class SalidasActivity extends AppCompatActivity {
             spCiudad.setAdapter(adapterCiudad);
         }
 
-        // =========================
-        // LISTENERS
-        // =========================
+        // ===== LISTENERS =====
         spCiudad.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, android.view.View view, int position, long id) {
@@ -148,9 +156,37 @@ public class SalidasActivity extends AppCompatActivity {
         btnVolver.setOnClickListener(v -> finish());
     }
 
-    // =========================================================
-    // CONTROL DE ROLES
-    // =========================================================
+    // ===== BOTÓN ATRÁS TOOLBAR =====
+    @Override
+    public boolean onSupportNavigateUp() {
+        finish();
+        return true;
+    }
+
+    // ===== MENÚ TOOLBAR =====
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_consulta, menu);
+        return true;
+    }
+
+    // ===== ACCIONES TOOLBAR =====
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        if (item.getItemId() == R.id.action_info) {
+            Toast.makeText(this, "Gestión de salidas de combustible", Toast.LENGTH_SHORT).show();
+            return true;
+
+        } else if (item.getItemId() == R.id.action_notificar) {
+            Toast.makeText(this, "Función de notificación", Toast.LENGTH_SHORT).show();
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    // ===== CONTROL DE ROLES =====
     private void configurarPorRol() {
 
         if (rol.equalsIgnoreCase("OPERADOR")) {
@@ -175,14 +211,10 @@ public class SalidasActivity extends AppCompatActivity {
             }
         }
 
-        // =====================================================
-        // BLOQUEO DISTRIBUIDOR (NUEVO)
-        // =====================================================
         if (rol.equalsIgnoreCase("DISTRIBUIDOR")) {
 
             btnRetirar.setEnabled(false);
             btnRetirar.setAlpha(0.4f);
-
             etSalida.setEnabled(false);
 
             Toast.makeText(this,
@@ -195,12 +227,9 @@ public class SalidasActivity extends AppCompatActivity {
         }
     }
 
-    // =========================================================
-    // REGISTRAR SALIDA (BLOQUEO REAL)
-    // =========================================================
+    // ===== REGISTRAR SALIDA =====
     private void registrarSalida() {
 
-        // 🔥 BLOQUEO REAL
         if (rol.equalsIgnoreCase("DISTRIBUIDOR")) {
             Toast.makeText(this,
                     "No tiene permisos para registrar salidas",
@@ -277,9 +306,7 @@ public class SalidasActivity extends AppCompatActivity {
         }
     }
 
-    // =========================================================
-    // INVENTARIO UI
-    // =========================================================
+    // ===== INVENTARIO UI =====
     private void actualizarInventarioUI() {
 
         String tipo = spTipoCombustible.getSelectedItem().toString();

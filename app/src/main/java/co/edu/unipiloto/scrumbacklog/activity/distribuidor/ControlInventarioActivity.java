@@ -21,6 +21,10 @@ import co.edu.unipiloto.scrumbacklog.database.dao.InventarioDAO;
 import co.edu.unipiloto.scrumbacklog.database.dao.MovimientoDAO;
 import co.edu.unipiloto.scrumbacklog.database.dao.UbicacionDAO;
 import co.edu.unipiloto.scrumbacklog.database.dao.UsuarioDAO;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.widget.*;
+import androidx.appcompat.widget.Toolbar;
 
 public class ControlInventarioActivity extends AppCompatActivity {
 
@@ -47,6 +51,16 @@ public class ControlInventarioActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_control_inventario);
 
+        // ===== TOOLBAR =====
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setTitle("Control Inventario");
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
+        // ===================
+
         factory = new DAOFactory(this);
 
         inventarioDAO = factory.getInventarioDAO();
@@ -67,12 +81,42 @@ public class ControlInventarioActivity extends AppCompatActivity {
 
         configurarPorRol();
         cargarCombustibles();
-
         configurarListeners();
 
         inicializado = true;
 
         btnVolver.setOnClickListener(v -> finish());
+    }
+
+    // ===== BOTÓN ← TOOLBAR =====
+    @Override
+    public boolean onSupportNavigateUp() {
+        finish();
+        return true;
+    }
+
+    // ===== MENÚ TOOLBAR =====
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_control_inventario, menu);
+        return true;
+    }
+
+    // ===== ACCIONES TOOLBAR =====
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        if (item.getItemId() == R.id.action_info) {
+            Toast.makeText(this, "Consulta de inventario y movimientos", Toast.LENGTH_SHORT).show();
+            return true;
+
+        } else if (item.getItemId() == R.id.action_refrescar) {
+            refrescarVista();
+            Toast.makeText(this, "Datos actualizados", Toast.LENGTH_SHORT).show();
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
     // =========================================================
@@ -85,9 +129,6 @@ public class ControlInventarioActivity extends AppCompatActivity {
             return;
         }
 
-        // =========================
-        // ADMIN / DISTRIBUIDOR
-        // =========================
         if (rol.equalsIgnoreCase("ADMIN") || rol.equalsIgnoreCase("DISTRIBUIDOR")) {
 
             cargarCiudades();
@@ -116,60 +157,42 @@ public class ControlInventarioActivity extends AppCompatActivity {
             return;
         }
 
-        // =========================
-        // OPERADOR / ESTACIÓN
-        // =========================
         if (rol.equalsIgnoreCase("OPERADOR")) {
 
             String[] ubicacion = usuarioDAO.obtenerUbicacionUsuario(idUbicacionUsuario);
 
             if (ubicacion != null) {
 
-                String ciudad = ubicacion[0];
-                String estacion = ubicacion[1];
-
-                // CIUDAD FIJA
                 spFiltroCiudad.setAdapter(new ArrayAdapter<>(
                         this,
                         android.R.layout.simple_spinner_dropdown_item,
-                        Collections.singletonList(ciudad)
+                        Collections.singletonList(ubicacion[0])
                 ));
                 spFiltroCiudad.setEnabled(false);
 
-                // ESTACIÓN FIJA
                 spFiltroEstacion.setAdapter(new ArrayAdapter<>(
                         this,
                         android.R.layout.simple_spinner_dropdown_item,
-                        Collections.singletonList(estacion)
+                        Collections.singletonList(ubicacion[1])
                 ));
                 spFiltroEstacion.setEnabled(false);
             }
         }
     }
 
-    // =========================================================
-    // COMBUSTIBLES
-    // =========================================================
     private void cargarCombustibles() {
 
         String[] combustibles = {"Todos", "Corriente", "Extra", "Diesel"};
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(
+        spFiltroCombustible.setAdapter(new ArrayAdapter<>(
                 this,
                 android.R.layout.simple_spinner_dropdown_item,
                 combustibles
-        );
-
-        spFiltroCombustible.setAdapter(adapter);
+        ));
     }
 
-    // =========================================================
-    // CIUDADES (ADMIN / DISTRIBUIDOR)
-    // =========================================================
     private void cargarCiudades() {
-
         ciudades = ubicacionDAO.obtenerCiudades();
-
         if (ciudades == null) ciudades = new ArrayList<>();
 
         spFiltroCiudad.setAdapter(new ArrayAdapter<>(
@@ -179,13 +202,8 @@ public class ControlInventarioActivity extends AppCompatActivity {
         ));
     }
 
-    // =========================================================
-    // ESTACIONES POR CIUDAD
-    // =========================================================
     private void cargarEstaciones(String ciudad) {
-
         estaciones = ubicacionDAO.obtenerZonas(ciudad);
-
         if (estaciones == null) estaciones = new ArrayList<>();
 
         spFiltroEstacion.setAdapter(new ArrayAdapter<>(
@@ -195,12 +213,9 @@ public class ControlInventarioActivity extends AppCompatActivity {
         ));
     }
 
-    // =========================================================
-    // LISTENERS
-    // =========================================================
     private void configurarListeners() {
 
-        AdapterView.OnItemSelectedListener listener = new AdapterView.OnItemSelectedListener() {
+        spFiltroCombustible.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 if (inicializado) refrescarVista();
@@ -208,14 +223,9 @@ public class ControlInventarioActivity extends AppCompatActivity {
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {}
-        };
-
-        spFiltroCombustible.setOnItemSelectedListener(listener);
+        });
     }
 
-    // =========================================================
-    // REFRESCAR VISTA
-    // =========================================================
     private void refrescarVista() {
 
         if (spFiltroCiudad.getSelectedItem() == null ||
@@ -225,9 +235,6 @@ public class ControlInventarioActivity extends AppCompatActivity {
         mostrarHistorial();
     }
 
-    // =========================================================
-    // INVENTARIO
-    // =========================================================
     private void mostrarInventario() {
 
         layoutInventario.removeAllViews();
@@ -235,8 +242,6 @@ public class ControlInventarioActivity extends AppCompatActivity {
         String combustible = spFiltroCombustible.getSelectedItem().toString();
         String ciudad = spFiltroCiudad.getSelectedItem().toString();
         String estacion = spFiltroEstacion.getSelectedItem().toString();
-
-        int idUbicacion = ubicacionDAO.obtenerIdUbicacion(ciudad, estacion);
 
         String[] tipos = combustible.equals("Todos")
                 ? new String[]{"Corriente", "Extra", "Diesel"}
@@ -254,9 +259,6 @@ public class ControlInventarioActivity extends AppCompatActivity {
         }
     }
 
-    // =========================================================
-    // HISTORIAL
-    // =========================================================
     private void mostrarHistorial() {
 
         layoutHistorial.removeAllViews();

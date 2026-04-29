@@ -13,15 +13,18 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import java.util.Collections;
-
 import co.edu.unipiloto.scrumbacklog.R;
 import co.edu.unipiloto.scrumbacklog.database.DAOFactory;
 import co.edu.unipiloto.scrumbacklog.database.dao.CombustibleDAO;
 import co.edu.unipiloto.scrumbacklog.database.dao.PrecioDAO;
 import co.edu.unipiloto.scrumbacklog.database.dao.UbicacionDAO;
 import co.edu.unipiloto.scrumbacklog.database.dao.UsuarioDAO;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.widget.*;
+import androidx.appcompat.widget.Toolbar;
+import java.util.ArrayList;
 
 public class ReguladorPreciosActivity extends AppCompatActivity {
 
@@ -46,6 +49,16 @@ public class ReguladorPreciosActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_regulador_precios);
 
+        // ===== TOOLBAR =====
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setTitle("Regulador de Precios");
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
+        // ===================
+
         SharedPreferences prefs = getSharedPreferences("sesion", MODE_PRIVATE);
         rol = prefs.getString("rol", "");
         idUbicacion = prefs.getInt("id_ubicacion", -1);
@@ -67,15 +80,44 @@ public class ReguladorPreciosActivity extends AppCompatActivity {
         btnVolver = findViewById(R.id.btnVolver);
 
         cargarCombustibles();
-
         configurarSegunRol();
-
         configurarListeners();
 
         inicializado = true;
 
         btnActualizarPrecio.setOnClickListener(v -> actualizarPrecio());
         btnVolver.setOnClickListener(v -> finish());
+    }
+
+    // ===== BOTÓN ← TOOLBAR =====
+    @Override
+    public boolean onSupportNavigateUp() {
+        finish();
+        return true;
+    }
+
+    // ===== MENÚ TOOLBAR =====
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_regulador, menu);
+        return true;
+    }
+
+    // ===== ACCIONES TOOLBAR =====
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        if (item.getItemId() == R.id.action_info) {
+            Toast.makeText(this, "Gestión de precios por ubicación", Toast.LENGTH_SHORT).show();
+            return true;
+
+        } else if (item.getItemId() == R.id.action_refrescar) {
+            mostrarPrecioActual();
+            Toast.makeText(this, "Precio actualizado", Toast.LENGTH_SHORT).show();
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
     // ---------------- ROLES ----------------
@@ -87,21 +129,33 @@ public class ReguladorPreciosActivity extends AppCompatActivity {
             String[] ubicacion = usuarioDAO.obtenerUbicacionUsuario(idUbicacion);
 
             if (ubicacion != null) {
-                String ciudad = ubicacion[0];
-                String localidad = ubicacion[1];
 
                 spCiudad.setAdapter(new ArrayAdapter<>(this,
                         android.R.layout.simple_spinner_item,
-                        Collections.singletonList(ciudad)));
+                        Collections.singletonList(ubicacion[0])));
 
                 spLocalidad.setAdapter(new ArrayAdapter<>(this,
                         android.R.layout.simple_spinner_item,
-                        Collections.singletonList(localidad)));
+                        Collections.singletonList(ubicacion[1])));
 
                 spCiudad.setEnabled(false);
                 spLocalidad.setEnabled(false);
             }
 
+        } else {
+            // ADMIN → carga completa
+            cargarCiudades();
+
+            spCiudad.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                    String ciudad = spCiudad.getSelectedItem().toString();
+                    cargarZonas(ciudad);
+                }
+
+                @Override
+                public void onNothingSelected(AdapterView<?> parent) {}
+            });
         }
     }
 
@@ -112,9 +166,7 @@ public class ReguladorPreciosActivity extends AppCompatActivity {
         AdapterView.OnItemSelectedListener listener = new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if (inicializado) {
-                    mostrarPrecioActual();
-                }
+                if (inicializado) mostrarPrecioActual();
             }
 
             @Override
@@ -126,16 +178,39 @@ public class ReguladorPreciosActivity extends AppCompatActivity {
         spCombustible.setOnItemSelectedListener(listener);
     }
 
-    // ---------------- LOGICA ----------------
+    // ---------------- CARGA ----------------
 
     private void cargarCombustibles() {
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(
+        spCombustible.setAdapter(new ArrayAdapter<>(
                 this,
                 android.R.layout.simple_spinner_item,
                 combustibleDAO.obtenerCombustibles()
-        );
-        spCombustible.setAdapter(adapter);
+        ));
     }
+
+    private void cargarCiudades() {
+        ArrayList<String> ciudades = ubicacionDAO.obtenerCiudades();
+        if (ciudades == null) ciudades = new ArrayList<>();
+
+        spCiudad.setAdapter(new ArrayAdapter<>(
+                this,
+                android.R.layout.simple_spinner_item,
+                ciudades
+        ));
+    }
+
+    private void cargarZonas(String ciudad) {
+        ArrayList<String> zonas = ubicacionDAO.obtenerZonas(ciudad);
+        if (zonas == null) zonas = new ArrayList<>();
+
+        spLocalidad.setAdapter(new ArrayAdapter<>(
+                this,
+                android.R.layout.simple_spinner_item,
+                zonas
+        ));
+    }
+
+    // ---------------- LOGICA ----------------
 
     private void mostrarPrecioActual() {
 
@@ -153,17 +228,16 @@ public class ReguladorPreciosActivity extends AppCompatActivity {
             if (spCiudad.getSelectedItem() == null || spLocalidad.getSelectedItem() == null)
                 return;
 
-            String ciudad = spCiudad.getSelectedItem().toString();
-            String localidad = spLocalidad.getSelectedItem().toString();
-
-            precio = precioDAO.obtenerPrecioZona(combustible, ciudad, localidad);
+            precio = precioDAO.obtenerPrecioZona(
+                    combustible,
+                    spCiudad.getSelectedItem().toString(),
+                    spLocalidad.getSelectedItem().toString()
+            );
         }
 
-        if (precio < 0) {
-            txtPrecioActual.setText("Precio no disponible");
-        } else {
-            txtPrecioActual.setText("Precio actual: $" + precio);
-        }
+        txtPrecioActual.setText(
+                precio < 0 ? "Precio no disponible" : "Precio actual: $" + precio
+        );
     }
 
     // ---------------- UPDATE ----------------
@@ -171,8 +245,6 @@ public class ReguladorPreciosActivity extends AppCompatActivity {
     private void actualizarPrecio() {
 
         if (spCombustible.getSelectedItem() == null) return;
-
-        String combustible = spCombustible.getSelectedItem().toString();
 
         double nuevoPrecio;
 
@@ -187,7 +259,11 @@ public class ReguladorPreciosActivity extends AppCompatActivity {
 
         if (rol.equalsIgnoreCase("OPERADOR")) {
 
-            ok = actualizarPrecioPorUbicacion(combustible, idUbicacion, nuevoPrecio);
+            ok = actualizarPrecioPorUbicacion(
+                    spCombustible.getSelectedItem().toString(),
+                    idUbicacion,
+                    nuevoPrecio
+            );
 
         } else {
 
@@ -195,16 +271,14 @@ public class ReguladorPreciosActivity extends AppCompatActivity {
                 return;
 
             ok = actualizarPrecioPorZona(
-                    combustible,
+                    spCombustible.getSelectedItem().toString(),
                     spCiudad.getSelectedItem().toString(),
                     spLocalidad.getSelectedItem().toString(),
                     nuevoPrecio
             );
         }
 
-        Toast.makeText(this,
-                ok ? "Actualizado" : "Error",
-                Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, ok ? "Actualizado" : "Error", Toast.LENGTH_SHORT).show();
 
         mostrarPrecioActual();
     }
