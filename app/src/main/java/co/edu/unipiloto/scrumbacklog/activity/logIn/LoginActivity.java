@@ -35,7 +35,11 @@ public class LoginActivity extends AppCompatActivity {
         usuarioDAO = factory.getUsuarioDAO();
 
         btnLogin.setOnClickListener(v -> login());
-        btnVolver.setOnClickListener(v -> finish());
+        btnVolver.setOnClickListener(v -> {
+            Intent intent = new Intent(this, LoginScreenActivity.class);
+            startActivity(intent);
+        });
+
     }
 
     private void login() {

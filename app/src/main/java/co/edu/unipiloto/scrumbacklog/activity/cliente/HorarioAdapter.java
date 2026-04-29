@@ -1,6 +1,7 @@
 package co.edu.unipiloto.scrumbacklog.activity.cliente;
 
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.view.*;
 import android.widget.*;
@@ -9,6 +10,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import co.edu.unipiloto.scrumbacklog.R;
+import co.edu.unipiloto.scrumbacklog.activity.MainActivity;
 
 public class HorarioAdapter extends CursorAdapter {
 
@@ -27,6 +29,8 @@ public class HorarioAdapter extends CursorAdapter {
         TextView tvNombre = view.findViewById(R.id.tvNombre);
         TextView tvHorario = view.findViewById(R.id.tvHorario);
         TextView tvEstado = view.findViewById(R.id.tvEstado);
+        Button btnVolver = view.findViewById(R.id.btnVolver);
+
 
         String nombre = cursor.getString(cursor.getColumnIndexOrThrow("nombre"));
         String apertura = cursor.getString(cursor.getColumnIndexOrThrow("hora_apertura"));
@@ -51,5 +55,10 @@ public class HorarioAdapter extends CursorAdapter {
         } catch (Exception e) {
             tvEstado.setText("Horario no disponible");
         }
+
+        btnVolver.setOnClickListener(v -> {
+            Intent intent = new Intent(context, MainActivity.class);
+            context.startActivity(intent);
+        });
     }
 }

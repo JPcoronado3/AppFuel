@@ -12,6 +12,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import co.edu.unipiloto.scrumbacklog.R;
+import co.edu.unipiloto.scrumbacklog.activity.MainActivity;
 import co.edu.unipiloto.scrumbacklog.database.dao.PedidoDAO;
 
 public class RecepcionAdapter extends CursorAdapter {
@@ -33,6 +34,8 @@ public class RecepcionAdapter extends CursorAdapter {
 
         TextView tvInfo = view.findViewById(R.id.tvInfoRecepcion);
         Button btnConfirmar = view.findViewById(R.id.btnConfirmar);
+        Button btnVolver = view.findViewById(R.id.btnVolver);
+
 
         int id = cursor.getInt(cursor.getColumnIndexOrThrow("id_pedido"));
         String ubicacion = cursor.getString(cursor.getColumnIndexOrThrow("ubicacion"));
@@ -62,5 +65,11 @@ public class RecepcionAdapter extends CursorAdapter {
             Cursor nuevoCursor = pedidoDAO.obtenerPedidosEntregados();
             changeCursor(nuevoCursor);
         });
+
+        btnVolver.setOnClickListener(v -> {
+            Intent intent = new Intent(context, MainActivity.class);
+            context.startActivity(intent);
+        });
     }
+
 }

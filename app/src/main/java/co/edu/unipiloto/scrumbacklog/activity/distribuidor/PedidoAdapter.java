@@ -1,11 +1,13 @@
 package co.edu.unipiloto.scrumbacklog.activity.distribuidor;
 
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.view.*;
 import android.widget.*;
 
 import co.edu.unipiloto.scrumbacklog.R;
+import co.edu.unipiloto.scrumbacklog.activity.MainActivity;
 import co.edu.unipiloto.scrumbacklog.database.dao.PedidoDAO;
 
 public class PedidoAdapter extends CursorAdapter {
@@ -29,6 +31,7 @@ public class PedidoAdapter extends CursorAdapter {
         EditText etMotivo = view.findViewById(R.id.etMotivo);
         Button btnAceptar = view.findViewById(R.id.btnAceptar);
         Button btnCancelar = view.findViewById(R.id.btnCancelar);
+        Button btnVolver = view.findViewById(R.id.btnVolver);
 
         int id = cursor.getInt(cursor.getColumnIndexOrThrow("id_pedido"));
         int ubicacion = cursor.getInt(cursor.getColumnIndexOrThrow("id_ubicacion"));
@@ -69,7 +72,10 @@ public class PedidoAdapter extends CursorAdapter {
             Cursor nuevoCursor = pedidoDAO.obtenerPedidosPendientes();
             changeCursor(nuevoCursor);
         });
+
+        btnVolver.setOnClickListener(v -> {
+            Intent intent = new Intent(context, MainActivity.class);
+            context.startActivity(intent);
+        });
     }
-
-
 }

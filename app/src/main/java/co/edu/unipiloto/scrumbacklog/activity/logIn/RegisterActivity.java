@@ -1,5 +1,6 @@
 package co.edu.unipiloto.scrumbacklog.activity.logIn;
 
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
@@ -56,7 +57,10 @@ public class RegisterActivity extends AppCompatActivity {
         cargarEstaciones();
 
         btnRegistrar.setOnClickListener(v -> registrarUsuario());
-        btnVolver.setOnClickListener(v -> finish());
+        btnVolver.setOnClickListener(v -> {
+            Intent intent = new Intent(this, LoginScreenActivity.class);
+            startActivity(intent);
+        });
     }
 
     // =========================
