@@ -2,6 +2,8 @@ package co.edu.unipiloto.scrumbacklog.activity.operador;
 
 import android.app.DatePickerDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.widget.*;
@@ -9,6 +11,7 @@ import android.widget.*;
 import androidx.appcompat.app.AppCompatActivity;
 
 import java.util.Calendar;
+import java.util.Collections;
 
 import co.edu.unipiloto.scrumbacklog.R;
 import co.edu.unipiloto.scrumbacklog.activity.MainActivity;
@@ -17,17 +20,24 @@ import co.edu.unipiloto.scrumbacklog.database.dao.PedidoDAO;
 
 public class ProgramarPedidoActivity extends AppCompatActivity {
 
-    private EditText etUbicacion, etCombustible, etCantidad, etFecha;
+    private EditText etCantidad, etFecha;
     private Button btnGuardar, btnFecha, btnVolver;
     private Spinner spUbicacion, spCombustible;
+
     private DatabaseHelper dbHelper;
     private SQLiteDatabase db;
     private PedidoDAO pedidoDAO;
+
+    private int idUbicacionUsuario;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_programar_pedido);
+
+        // 🔥 SESIÓN (igual que tu otra Activity)
+        SharedPreferences prefs = getSharedPreferences("sesion", MODE_PRIVATE);
+        idUbicacionUsuario = prefs.getInt("id_ubicacion", -1);
 
         // Referencias UI
         spUbicacion = findViewById(R.id.spUbicacion);
@@ -40,11 +50,11 @@ public class ProgramarPedidoActivity extends AppCompatActivity {
         btnFecha = findViewById(R.id.btnSeleccionarFecha);
         btnVolver = findViewById(R.id.btnVolver);
 
-
         // Base de datos
         dbHelper = new DatabaseHelper(this);
         db = dbHelper.getWritableDatabase();
         pedidoDAO = new PedidoDAO(db);
+
         cargarSpinners();
 
         // Selector de fecha
@@ -52,6 +62,7 @@ public class ProgramarPedidoActivity extends AppCompatActivity {
 
         // Guardar pedido
         btnGuardar.setOnClickListener(v -> guardarPedido());
+
         btnVolver.setOnClickListener(v -> {
             Intent intent = new Intent(ProgramarPedidoActivity.this, MainActivity.class);
             startActivity(intent);
@@ -60,19 +71,23 @@ public class ProgramarPedidoActivity extends AppCompatActivity {
 
     private void cargarSpinners() {
 
-        // Ubicaciones
-        String[] ubicaciones = {
-                "Estación Suba",
-                "Estación Engativá",
-                "Estación Centro"
-        };
+        // =========================
+        // 🔥 UBICACIÓN BLOQUEADA
+        // =========================
+        String nombreEstacion = obtenerNombreEstacion(idUbicacionUsuario);
 
         ArrayAdapter<String> adapterUbicacion = new ArrayAdapter<>(
-                this, android.R.layout.simple_spinner_item, ubicaciones);
-        adapterUbicacion.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spUbicacion.setAdapter(adapterUbicacion);
+                this,
+                android.R.layout.simple_spinner_dropdown_item,
+                Collections.singletonList(nombreEstacion)
+        );
 
-        // Combustibles
+        spUbicacion.setAdapter(adapterUbicacion);
+        spUbicacion.setEnabled(false); // 🔥 NO SE PUEDE CAMBIAR
+
+        // =========================
+        // COMBUSTIBLE NORMAL
+        // =========================
         String[] combustibles = {
                 "Corriente",
                 "Extra",
@@ -80,9 +95,30 @@ public class ProgramarPedidoActivity extends AppCompatActivity {
         };
 
         ArrayAdapter<String> adapterCombustible = new ArrayAdapter<>(
-                this, android.R.layout.simple_spinner_item, combustibles);
-        adapterCombustible.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                this,
+                android.R.layout.simple_spinner_dropdown_item,
+                combustibles
+        );
+
         spCombustible.setAdapter(adapterCombustible);
+    }
+
+    // 🔥 TRAER NOMBRE REAL DESDE BD
+    private String obtenerNombreEstacion(int idUbicacion) {
+
+        Cursor cursor = db.rawQuery(
+                "SELECT nombre FROM ubicacion WHERE id_ubicacion = ?",
+                new String[]{String.valueOf(idUbicacion)}
+        );
+
+        if (cursor.moveToFirst()) {
+            String nombre = cursor.getString(0);
+            cursor.close();
+            return nombre;
+        }
+
+        cursor.close();
+        return "Desconocida";
     }
 
     private void mostrarDatePicker() {
@@ -105,8 +141,16 @@ public class ProgramarPedidoActivity extends AppCompatActivity {
 
     private void guardarPedido() {
         try {
-            int idUbicacion = spUbicacion.getSelectedItemPosition() + 1;
+
+            if (idUbicacionUsuario == -1) {
+                Toast.makeText(this, "Error: usuario sin ubicación", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            // 🔥 CLAVE: NO USAR SPINNER
+            int idUbicacion = idUbicacionUsuario;
             int idCombustible = spCombustible.getSelectedItemPosition() + 1;
+
             double cantidad = Double.parseDouble(etCantidad.getText().toString());
             String fecha = etFecha.getText().toString();
 
@@ -127,9 +171,8 @@ public class ProgramarPedidoActivity extends AppCompatActivity {
     }
 
     private void limpiarCampos() {
-        etUbicacion.setText("");
-        etCombustible.setText("");
         etCantidad.setText("");
         etFecha.setText("");
+        spCombustible.setSelection(0);
     }
 }
