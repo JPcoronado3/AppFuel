@@ -18,10 +18,12 @@ import co.edu.unipiloto.scrumbacklog.database.dao.PedidoDAO;
 public class RecepcionAdapter extends CursorAdapter {
 
     private PedidoDAO pedidoDAO;
+    private int idUbicacionUsuario;
 
-    public RecepcionAdapter(Context context, Cursor cursor, PedidoDAO pedidoDAO) {
+    public RecepcionAdapter(Context context, Cursor cursor, PedidoDAO pedidoDAO, int idUbicacionUsuario) {
         super(context, cursor, 0);
         this.pedidoDAO = pedidoDAO;
+        this.idUbicacionUsuario = idUbicacionUsuario;
     }
 
     @Override
@@ -35,7 +37,6 @@ public class RecepcionAdapter extends CursorAdapter {
         TextView tvInfo = view.findViewById(R.id.tvInfoRecepcion);
         Button btnConfirmar = view.findViewById(R.id.btnConfirmar);
         Button btnVolver = view.findViewById(R.id.btnVolver);
-
 
         int id = cursor.getInt(cursor.getColumnIndexOrThrow("id_pedido"));
         String ubicacion = cursor.getString(cursor.getColumnIndexOrThrow("ubicacion"));
@@ -57,13 +58,14 @@ public class RecepcionAdapter extends CursorAdapter {
 
             Toast.makeText(context, "Recepción confirmada", Toast.LENGTH_SHORT).show();
 
-            // 👉 REDIRECCIÓN A INVENTARIO
+            // 🔥 RECARGAR SOLO LOS DE SU ESTACIÓN
+            Cursor nuevoCursor = pedidoDAO.obtenerPedidosEntregadosPorUbicacion(idUbicacionUsuario);
+            changeCursor(nuevoCursor);
+
+            // 👉 REDIRECCIÓN
             Intent intent = new Intent(context, InventarioActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             context.startActivity(intent);
-
-            Cursor nuevoCursor = pedidoDAO.obtenerPedidosEntregados();
-            changeCursor(nuevoCursor);
         });
 
         btnVolver.setOnClickListener(v -> {
@@ -71,5 +73,4 @@ public class RecepcionAdapter extends CursorAdapter {
             context.startActivity(intent);
         });
     }
-
 }

@@ -44,6 +44,7 @@ public class PedidoEntregaAdapter extends CursorAdapter {
         Button btnVolver = view.findViewById(R.id.btnVolver);
 
         int id = cursor.getInt(cursor.getColumnIndexOrThrow("id_pedido"));
+        int idUbicacion = cursor.getInt(cursor.getColumnIndexOrThrow("id_ubicacion")); // 🔥 CLAVE
         String ubicacion = cursor.getString(cursor.getColumnIndexOrThrow("ubicacion"));
         String combustible = cursor.getString(cursor.getColumnIndexOrThrow("combustible"));
         double cantidad = cursor.getDouble(cursor.getColumnIndexOrThrow("cantidad"));
@@ -56,14 +57,13 @@ public class PedidoEntregaAdapter extends CursorAdapter {
         );
 
         tvContador.setText("Pendiente");
-
         btnCompletar.setEnabled(false);
 
         btnIniciar.setOnClickListener(v -> {
 
             btnIniciar.setEnabled(false);
 
-            int tiempoTotal = 3000; // 3 segundos simulación
+            int tiempoTotal = 3000;
             int interval = 100;
 
             new CountDownTimer(tiempoTotal, interval) {
@@ -92,9 +92,12 @@ public class PedidoEntregaAdapter extends CursorAdapter {
             String fechaActual = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
                     .format(new Date());
 
+            // 🔥 Se marca SOLO este pedido (con su ubicación asociada)
             pedidoDAO.marcarComoEntregado(id, fechaActual);
 
-            Toast.makeText(context, "Entrega completada", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context,
+                    "Entrega enviada a: " + ubicacion,
+                    Toast.LENGTH_SHORT).show();
 
             Cursor nuevoCursor = pedidoDAO.obtenerPedidosAceptados();
             changeCursor(nuevoCursor);

@@ -47,6 +47,24 @@ public class PedidoDAO {
         );
     }
 
+    public Cursor obtenerPedidosEntregadosPorUbicacion(int idUbicacion) {
+        return db.rawQuery(
+                "SELECT p.id_pedido AS _id, " +
+                        "p.id_pedido, " +
+                        "p.id_ubicacion, " +
+                        "u.nombre AS ubicacion, " +
+                        "c.nombre AS combustible, " +
+                        "p.cantidad, " +
+                        "p.fecha " +
+                        "FROM pedido p " +
+                        "JOIN ubicacion u ON p.id_ubicacion = u.id_ubicacion " +
+                        "JOIN combustible c ON p.id_combustible = c.id_combustible " +
+                        "WHERE p.estado = 'ENTREGADO' " +
+                        "AND p.id_ubicacion = ?",
+                new String[]{String.valueOf(idUbicacion)}
+        );
+    }
+
     public void marcarComoRecibido(int idPedido) {
         ContentValues values = new ContentValues();
         values.put("estado", "RECIBIDO");
