@@ -7,16 +7,17 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.widget.*;
-
 import androidx.appcompat.app.AppCompatActivity;
-
 import java.util.Calendar;
 import java.util.Collections;
-
 import co.edu.unipiloto.scrumbacklog.R;
-import co.edu.unipiloto.scrumbacklog.activity.MainActivity;
+import co.edu.unipiloto.scrumbacklog.activity.logIn.LoginActivity;
 import co.edu.unipiloto.scrumbacklog.database.DatabaseHelper;
 import co.edu.unipiloto.scrumbacklog.database.dao.PedidoDAO;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.widget.*;
+import androidx.appcompat.widget.Toolbar;
 
 public class ProgramarPedidoActivity extends AppCompatActivity {
 
@@ -34,6 +35,16 @@ public class ProgramarPedidoActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_programar_pedido);
+
+        // ===== TOOLBAR =====
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setTitle("Programar Pedido");
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
+        // ===================
 
         SharedPreferences prefs = getSharedPreferences("sesion", MODE_PRIVATE);
         idUbicacionUsuario = prefs.getInt("id_ubicacion", -1);
@@ -55,47 +66,75 @@ public class ProgramarPedidoActivity extends AppCompatActivity {
         cargarSpinners();
 
         btnFecha.setOnClickListener(v -> mostrarDatePicker());
-
         btnGuardar.setOnClickListener(v -> guardarPedido());
-
-        btnVolver.setOnClickListener(v -> {
-            Intent intent = new Intent(ProgramarPedidoActivity.this, MainActivity.class);
-            startActivity(intent);
-        });
+        btnVolver.setOnClickListener(v -> finish());
     }
 
+    // ===== BOTÓN ← TOOLBAR =====
+    @Override
+    public boolean onSupportNavigateUp() {
+        finish();
+        return true;
+    }
+
+    // ===== MENÚ TOOLBAR =====
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_pedido, menu);
+        return true;
+    }
+
+    // ===== ACCIONES TOOLBAR =====
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        if (item.getItemId() == R.id.action_info) {
+            Toast.makeText(this, "Permite programar pedidos de combustible", Toast.LENGTH_SHORT).show();
+            return true;
+
+        } else if (item.getItemId() == R.id.action_logout) {
+            cerrarSesion();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    // ===== CERRAR SESIÓN =====
+    private void cerrarSesion() {
+
+        SharedPreferences prefs = getSharedPreferences("sesion", MODE_PRIVATE);
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.clear();
+        editor.apply();
+
+        Intent intent = new Intent(this, LoginActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
+
+        finish();
+    }
+
+    // =========================================================
+    // SPINNERS
+    // =========================================================
     private void cargarSpinners() {
 
-        // =========================
-        // UBICACIÓN BLOQUEADA
-        // =========================
         String nombreEstacion = obtenerNombreEstacion(idUbicacionUsuario);
 
-        ArrayAdapter<String> adapterUbicacion = new ArrayAdapter<>(
+        spUbicacion.setAdapter(new ArrayAdapter<>(
                 this,
                 android.R.layout.simple_spinner_dropdown_item,
                 Collections.singletonList(nombreEstacion)
-        );
-
-        spUbicacion.setAdapter(adapterUbicacion);
+        ));
         spUbicacion.setEnabled(false);
 
-        // =========================
-        // COMBUSTIBLE NORMAL
-        // =========================
-        String[] combustibles = {
-                "Corriente",
-                "Extra",
-                "Diesel"
-        };
+        String[] combustibles = {"Corriente", "Extra", "Diesel"};
 
-        ArrayAdapter<String> adapterCombustible = new ArrayAdapter<>(
+        spCombustible.setAdapter(new ArrayAdapter<>(
                 this,
                 android.R.layout.simple_spinner_dropdown_item,
                 combustibles
-        );
-
-        spCombustible.setAdapter(adapterCombustible);
+        ));
     }
 
     private String obtenerNombreEstacion(int idUbicacion) {
@@ -115,52 +154,67 @@ public class ProgramarPedidoActivity extends AppCompatActivity {
         return "Desconocida";
     }
 
+    // =========================================================
+    // DATE PICKER
+    // =========================================================
     private void mostrarDatePicker() {
+
         Calendar calendar = Calendar.getInstance();
 
-        int year = calendar.get(Calendar.YEAR);
-        int month = calendar.get(Calendar.MONTH);
-        int day = calendar.get(Calendar.DAY_OF_MONTH);
-
-        DatePickerDialog datePickerDialog = new DatePickerDialog(this,
-                (view, year1, month1, dayOfMonth) -> {
-
-                    String fecha = year1 + "-" + (month1 + 1) + "-" + dayOfMonth;
+        DatePickerDialog dialog = new DatePickerDialog(this,
+                (view, year, month, day) -> {
+                    String fecha = year + "-" + (month + 1) + "-" + day;
                     etFecha.setText(fecha);
+                },
+                calendar.get(Calendar.YEAR),
+                calendar.get(Calendar.MONTH),
+                calendar.get(Calendar.DAY_OF_MONTH)
+        );
 
-                }, year, month, day);
-
-        datePickerDialog.show();
+        dialog.show();
     }
 
+    // =========================================================
+    // GUARDAR PEDIDO
+    // =========================================================
     private void guardarPedido() {
+
+        if (idUbicacionUsuario == -1) {
+            Toast.makeText(this, "Error: usuario sin ubicación", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        String cantidadTexto = etCantidad.getText().toString().trim();
+        String fecha = etFecha.getText().toString().trim();
+
+        if (cantidadTexto.isEmpty()) {
+            Toast.makeText(this, "Ingrese cantidad", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        if (fecha.isEmpty()) {
+            Toast.makeText(this, "Seleccione una fecha", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        double cantidad;
+
         try {
+            cantidad = Double.parseDouble(cantidadTexto);
+        } catch (Exception e) {
+            Toast.makeText(this, "Cantidad inválida", Toast.LENGTH_SHORT).show();
+            return;
+        }
 
-            if (idUbicacionUsuario == -1) {
-                Toast.makeText(this, "Error: usuario sin ubicación", Toast.LENGTH_SHORT).show();
-                return;
-            }
+        int idCombustible = spCombustible.getSelectedItemPosition() + 1;
 
-            // 🔥 CLAVE: NO USAR SPINNER
-            int idUbicacion = idUbicacionUsuario;
-            int idCombustible = spCombustible.getSelectedItemPosition() + 1;
-
-            double cantidad = Double.parseDouble(etCantidad.getText().toString());
-            String fecha = etFecha.getText().toString();
-
-            if (fecha.isEmpty()) {
-                Toast.makeText(this, "Seleccione una fecha", Toast.LENGTH_SHORT).show();
-                return;
-            }
-
-            pedidoDAO.crearPedido(idUbicacion, idCombustible, cantidad, fecha);
-
+        try {
+            pedidoDAO.crearPedido(idUbicacionUsuario, idCombustible, cantidad, fecha);
             Toast.makeText(this, "Pedido programado correctamente", Toast.LENGTH_LONG).show();
-
             limpiarCampos();
 
         } catch (Exception e) {
-            Toast.makeText(this, "Error: Verifique los datos", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Error al guardar el pedido", Toast.LENGTH_SHORT).show();
         }
     }
 

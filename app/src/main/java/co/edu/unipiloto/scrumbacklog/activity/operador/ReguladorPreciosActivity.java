@@ -2,6 +2,7 @@ package co.edu.unipiloto.scrumbacklog.activity.operador;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
@@ -15,6 +16,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import java.util.Collections;
 import co.edu.unipiloto.scrumbacklog.R;
+import co.edu.unipiloto.scrumbacklog.activity.logIn.LoginActivity;
 import co.edu.unipiloto.scrumbacklog.database.DAOFactory;
 import co.edu.unipiloto.scrumbacklog.database.dao.CombustibleDAO;
 import co.edu.unipiloto.scrumbacklog.database.dao.PrecioDAO;
@@ -111,13 +113,26 @@ public class ReguladorPreciosActivity extends AppCompatActivity {
             Toast.makeText(this, "Gestión de precios por ubicación", Toast.LENGTH_SHORT).show();
             return true;
 
-        } else if (item.getItemId() == R.id.action_refrescar) {
-            mostrarPrecioActual();
-            Toast.makeText(this, "Precio actualizado", Toast.LENGTH_SHORT).show();
+        } else if (item.getItemId() == R.id.action_logout) {
+            cerrarSesion();
             return true;
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void cerrarSesion() {
+
+        SharedPreferences prefs = getSharedPreferences("sesion", MODE_PRIVATE);
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.clear();
+        editor.apply();
+
+        Intent intent = new Intent(this, LoginActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
+
+        finish();
     }
 
     // ---------------- ROLES ----------------

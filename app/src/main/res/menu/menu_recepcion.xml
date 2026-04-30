@@ -6,7 +6,10 @@
         android:title="Info"/>
 
     <item
+        android:id="@+id/action_refresh"
+        android:title="Actualizar"/>
+
+    <item
         android:id="@+id/action_logout"
         android:title="Cerrar sesión"/>
-
 </menu>

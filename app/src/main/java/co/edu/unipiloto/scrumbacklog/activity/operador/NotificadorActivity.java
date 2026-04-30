@@ -1,5 +1,6 @@
 package co.edu.unipiloto.scrumbacklog.activity.operador;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.widget.*;
@@ -7,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import java.util.ArrayList;
 import java.util.Collections;
 import co.edu.unipiloto.scrumbacklog.R;
+import co.edu.unipiloto.scrumbacklog.activity.logIn.LoginActivity;
 import co.edu.unipiloto.scrumbacklog.database.DAOFactory;
 import co.edu.unipiloto.scrumbacklog.database.dao.InventarioDAO;
 import co.edu.unipiloto.scrumbacklog.database.dao.UbicacionDAO;
@@ -88,13 +90,26 @@ public class NotificadorActivity extends AppCompatActivity {
             Toast.makeText(this, "Verifica niveles críticos de inventario", Toast.LENGTH_SHORT).show();
             return true;
 
-        } else if (item.getItemId() == R.id.action_alerta) {
-            verificarInventario();
-            Toast.makeText(this, "Alerta generada", Toast.LENGTH_SHORT).show();
+        } else if (item.getItemId() == R.id.action_logout) {
+            cerrarSesion();
             return true;
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void cerrarSesion() {
+
+        SharedPreferences prefs = getSharedPreferences("sesion", MODE_PRIVATE);
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.clear();
+        editor.apply();
+
+        Intent intent = new Intent(this, LoginActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
+
+        finish();
     }
 
     // =====================================================
