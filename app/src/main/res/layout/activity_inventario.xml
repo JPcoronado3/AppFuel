@@ -118,14 +118,6 @@
             android:textStyle="bold"
             android:layout_marginTop="16dp"/>
 
-        <!-- Botón volver -->
-        <Button
-            android:id="@+id/btnVolver"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="30dp"
-            android:text="Volver"/>
-
         </LinearLayout>
 
     </ScrollView>

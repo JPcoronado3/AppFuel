@@ -8,9 +8,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.*;
 import androidx.appcompat.app.AppCompatActivity;
-
 import java.util.ArrayList;
-
 import co.edu.unipiloto.scrumbacklog.R;
 import co.edu.unipiloto.scrumbacklog.activity.logIn.LoginActivity;
 import co.edu.unipiloto.scrumbacklog.database.DAOFactory;
@@ -26,7 +24,7 @@ import androidx.appcompat.widget.Toolbar;
 public class ConsultaActivity extends AppCompatActivity {
 
     Spinner spTipoCombustible, spCiudad, spZona;
-    Button btnCalcular, btnCalcularGalones, btnVolver;
+    Button btnCalcular, btnCalcularGalones;
     TextView txtResultado, txtResultadoGalones;
     EditText etGalones;
 
@@ -72,7 +70,6 @@ public class ConsultaActivity extends AppCompatActivity {
         spCiudad = findViewById(R.id.spCiudad);
         spZona = findViewById(R.id.spZona);
         btnCalcular = findViewById(R.id.btnCalcular);
-        btnVolver = findViewById(R.id.btnVolver);
         btnCalcularGalones = findViewById(R.id.calcularGalones);
         etGalones = findViewById(R.id.etGalones);
         txtResultadoGalones = findViewById(R.id.txtResultadoGalones);
@@ -180,8 +177,6 @@ public class ConsultaActivity extends AppCompatActivity {
 
             txtResultadoGalones.setText("Total: $" + (galones * precio));
         });
-
-        btnVolver.setOnClickListener(view -> finish());
     }
 
     // ===== FLECHA ← TOOLBAR =====

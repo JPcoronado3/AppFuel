@@ -27,7 +27,7 @@ public class SalidasActivity extends AppCompatActivity {
     TextView txtInventarioDisponible;
     Spinner spTipoCombustible, spCiudad, spZona;
     EditText etSalida;
-    Button btnRetirar, btnVolver;
+    Button btnRetirar;
     ListView listHistorial;
 
     DAOFactory factory;
@@ -74,7 +74,6 @@ public class SalidasActivity extends AppCompatActivity {
         spZona = findViewById(R.id.spZona);
         etSalida = findViewById(R.id.etSalida);
         btnRetirar = findViewById(R.id.btnRetirar);
-        btnVolver = findViewById(R.id.btnVolver);
         listHistorial = findViewById(R.id.listHistorial);
 
         String[] tipos = {"Corriente", "Extra", "Diesel"};
@@ -155,7 +154,6 @@ public class SalidasActivity extends AppCompatActivity {
         listHistorial.setAdapter(adapterHistorial);
 
         btnRetirar.setOnClickListener(v -> registrarSalida());
-        btnVolver.setOnClickListener(v -> finish());
     }
 
     // ===== BOTÓN ATRÁS TOOLBAR =====

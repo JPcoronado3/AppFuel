@@ -109,14 +109,6 @@
         android:textSize="18sp"
         android:layout_marginTop="20dp"/>
 
-    <!-- ================= VOLVER ================= -->
-    <Button
-        android:id="@+id/btnVolver"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
-        android:text="Volver" />
-
         </LinearLayout>
 
     </ScrollView>

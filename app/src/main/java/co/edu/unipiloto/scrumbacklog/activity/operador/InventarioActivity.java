@@ -8,12 +8,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.*;
 import androidx.appcompat.app.AppCompatActivity;
-
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
-
 import co.edu.unipiloto.scrumbacklog.R;
 import co.edu.unipiloto.scrumbacklog.activity.logIn.LoginActivity;
 import co.edu.unipiloto.scrumbacklog.database.DAOFactory;
@@ -31,7 +29,7 @@ public class InventarioActivity extends AppCompatActivity {
 
     Spinner spCombustible, spCiudad, spZona;
     EditText etCantidad;
-    Button btnAgregar, btnVolver;
+    Button btnAgregar;
     TextView txtInventarioTotal, txtInventarioDiesel, txtInventarioCorriente, txtInventarioExtra;
 
     DAOFactory factory;
@@ -77,7 +75,6 @@ public class InventarioActivity extends AppCompatActivity {
         spZona = findViewById(R.id.spZona);
         etCantidad = findViewById(R.id.etCantidad);
         btnAgregar = findViewById(R.id.btnAgregar);
-        btnVolver = findViewById(R.id.btnVolver);
         txtInventarioTotal = findViewById(R.id.txtInventarioTotal);
         txtInventarioDiesel = findViewById(R.id.txtInventarioDiesel);
         txtInventarioCorriente = findViewById(R.id.txtInventarioCorriente);
@@ -126,7 +123,6 @@ public class InventarioActivity extends AppCompatActivity {
         }
 
         btnAgregar.setOnClickListener(view -> registrarEntrada());
-        btnVolver.setOnClickListener(view -> finish());
     }
 
     // ===== TOOLBAR BACK =====

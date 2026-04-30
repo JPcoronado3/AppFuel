@@ -21,7 +21,7 @@ import androidx.appcompat.widget.Toolbar;
 public class NotificadorActivity extends AppCompatActivity {
 
     Spinner spCiudad, spZona;
-    Button btnVerificar, btnVolver;
+    Button btnVerificar;
     TextView txtAlerta;
 
     DAOFactory factory;
@@ -54,7 +54,6 @@ public class NotificadorActivity extends AppCompatActivity {
         spCiudad = findViewById(R.id.spCiudad);
         spZona = findViewById(R.id.spZona);
         btnVerificar = findViewById(R.id.btnVerificar);
-        btnVolver = findViewById(R.id.btnVolver);
         txtAlerta = findViewById(R.id.txtAlerta);
 
         factory = new DAOFactory(this);
@@ -65,7 +64,6 @@ public class NotificadorActivity extends AppCompatActivity {
         configurarPorRol();
 
         btnVerificar.setOnClickListener(v -> verificarInventario());
-        btnVolver.setOnClickListener(v -> finish());
     }
 
     // ===== BOTÓN ← TOOLBAR =====

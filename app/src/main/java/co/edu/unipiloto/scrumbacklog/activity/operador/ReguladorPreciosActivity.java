@@ -33,7 +33,7 @@ public class ReguladorPreciosActivity extends AppCompatActivity {
     private Spinner spCiudad, spLocalidad, spCombustible;
     private TextView txtPrecioActual;
     private EditText etNuevoPrecio;
-    private Button btnActualizarPrecio, btnVolver;
+    private Button btnActualizarPrecio;
 
     DAOFactory factory;
     CombustibleDAO combustibleDAO;
@@ -79,7 +79,6 @@ public class ReguladorPreciosActivity extends AppCompatActivity {
         etNuevoPrecio = findViewById(R.id.etNuevoPrecio);
 
         btnActualizarPrecio = findViewById(R.id.btnActualizarPrecio);
-        btnVolver = findViewById(R.id.btnVolver);
 
         cargarCombustibles();
         configurarSegunRol();
@@ -88,7 +87,6 @@ public class ReguladorPreciosActivity extends AppCompatActivity {
         inicializado = true;
 
         btnActualizarPrecio.setOnClickListener(v -> actualizarPrecio());
-        btnVolver.setOnClickListener(v -> finish());
     }
 
     // ===== BOTÓN ← TOOLBAR =====

@@ -89,7 +89,6 @@ public class PedidosPendientesActivity extends AppCompatActivity {
         finish();
     }
 
-
     private void cargarPedidos() {
         Cursor cursor = pedidoDAO.obtenerPedidosPendientes();
         PedidoAdapter adapter = new PedidoAdapter(this, cursor, pedidoDAO);

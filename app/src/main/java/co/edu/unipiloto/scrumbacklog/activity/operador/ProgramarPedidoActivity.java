@@ -22,7 +22,7 @@ import androidx.appcompat.widget.Toolbar;
 public class ProgramarPedidoActivity extends AppCompatActivity {
 
     private EditText etCantidad, etFecha;
-    private Button btnGuardar, btnFecha, btnVolver;
+    private Button btnGuardar, btnFecha;
     private Spinner spUbicacion, spCombustible;
 
     private DatabaseHelper dbHelper;
@@ -57,7 +57,6 @@ public class ProgramarPedidoActivity extends AppCompatActivity {
 
         btnGuardar = findViewById(R.id.btnGuardar);
         btnFecha = findViewById(R.id.btnSeleccionarFecha);
-        btnVolver = findViewById(R.id.btnVolver);
 
         dbHelper = new DatabaseHelper(this);
         db = dbHelper.getWritableDatabase();
@@ -67,7 +66,6 @@ public class ProgramarPedidoActivity extends AppCompatActivity {
 
         btnFecha.setOnClickListener(v -> mostrarDatePicker());
         btnGuardar.setOnClickListener(v -> guardarPedido());
-        btnVolver.setOnClickListener(v -> finish());
     }
 
     // ===== BOTÓN ← TOOLBAR =====

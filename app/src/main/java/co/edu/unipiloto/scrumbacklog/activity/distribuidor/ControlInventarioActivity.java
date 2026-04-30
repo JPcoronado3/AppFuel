@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -32,7 +31,6 @@ public class ControlInventarioActivity extends AppCompatActivity {
 
     private LinearLayout layoutInventario, layoutHistorial;
     private Spinner spFiltroCombustible, spFiltroCiudad, spFiltroEstacion;
-    private Button btnVolver;
 
     private ArrayList<String> ciudades;
     private ArrayList<String> estaciones;
@@ -79,7 +77,6 @@ public class ControlInventarioActivity extends AppCompatActivity {
         spFiltroEstacion = findViewById(R.id.spFiltroEstacion);
         layoutInventario = findViewById(R.id.layoutInventario);
         layoutHistorial = findViewById(R.id.layoutHistorial);
-        btnVolver = findViewById(R.id.btnVolver);
 
         configurarPorRol();
         cargarCombustibles();
@@ -87,7 +84,6 @@ public class ControlInventarioActivity extends AppCompatActivity {
 
         inicializado = true;
 
-        btnVolver.setOnClickListener(v -> finish());
     }
 
     // ===== BOTÓN ← TOOLBAR =====
