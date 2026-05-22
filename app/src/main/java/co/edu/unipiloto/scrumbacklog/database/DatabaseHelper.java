@@ -7,7 +7,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class DatabaseHelper extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "app.db";
-    private static final int DATABASE_VERSION = 28;
+    private static final int DATABASE_VERSION = 31;
 
     public DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -33,8 +33,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 "nombre TEXT," +
                 "ciudad TEXT," +
                 "localidad TEXT," +
+                "direccion TEXT," +
                 "hora_apertura TEXT," +
-                "hora_cierre TEXT)");
+                "hora_cierre TEXT," +
+                "latitud REAL," +
+                "longitud REAL)");
 
         // ALERTA
         db.execSQL("CREATE TABLE alerta (" +
@@ -101,6 +104,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 "fecha TEXT," +
                 "estado TEXT DEFAULT 'PENDIENTE'," +
                 "motivo_cancelacion TEXT," +
+                "agregado_inventario INTEGER DEFAULT 0,"+
                 "FOREIGN KEY(id_ubicacion) REFERENCES ubicacion(id_ubicacion)," +
                 "FOREIGN KEY(id_combustible) REFERENCES combustible(id_combustible))");
 
@@ -130,17 +134,17 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL("INSERT INTO combustible (nombre) VALUES ('Diesel')");
 
         // Estaciones (SIN ID manual)
-        db.execSQL("INSERT INTO ubicacion (nombre, ciudad, localidad, hora_apertura, hora_cierre) VALUES ('Estación Suba','Bogota','Suba','00:00','22:00')");
-        db.execSQL("INSERT INTO ubicacion (nombre, ciudad, localidad, hora_apertura, hora_cierre) VALUES ('Estación Calle 80','Bogota','Calle 80','00:00','23:00')");
-        db.execSQL("INSERT INTO ubicacion (nombre, ciudad, localidad, hora_apertura, hora_cierre) VALUES ('Estación Norte','Bogota','Norte','00:00','23:00')");
-        db.execSQL("INSERT INTO ubicacion (nombre, ciudad, localidad, hora_apertura, hora_cierre) VALUES ('Estación Americas','Bogota','Americas','00:00','23:00')");
-        db.execSQL("INSERT INTO ubicacion (nombre, ciudad, localidad, hora_apertura, hora_cierre) VALUES ('Estación Dorado','Bogota','Dorado','00:00','23:00')");
-        db.execSQL("INSERT INTO ubicacion (nombre, ciudad, localidad, hora_apertura, hora_cierre) VALUES ('Estación 20 de Julio','Bogota','20 de Julio','00:00','21:00')");
-        db.execSQL("INSERT INTO ubicacion (nombre, ciudad, localidad, hora_apertura, hora_cierre) VALUES ('Estación Tunal','Bogota','Tunal','00:00','23:00')");
-        db.execSQL("INSERT INTO ubicacion (nombre, ciudad, localidad, hora_apertura, hora_cierre) VALUES ('Estación Usme','Bogota','Usme','00:00','23:00')");
-        db.execSQL("INSERT INTO ubicacion (nombre, ciudad, localidad, hora_apertura, hora_cierre) VALUES ('Estación Sur','Bogota','Sur','00:00','23:00')");
-        db.execSQL("INSERT INTO ubicacion (nombre, ciudad, localidad, hora_apertura, hora_cierre) VALUES ('Estación Caracas','Bogota','Caracas','00:00','23:00')");
-        db.execSQL("INSERT INTO ubicacion (nombre, ciudad, localidad, hora_apertura, hora_cierre) VALUES ('Estación Centro','Bogota','Centro','00:00','23:00')");
+        db.execSQL("INSERT INTO ubicacion (nombre, ciudad, localidad, direccion, hora_apertura, hora_cierre, latitud, longitud) VALUES ('Estación Suba','Bogota','Suba', 'Cra. 98a #130c-41','00:00','22:00','4.74141636107266','-74.08996255583385')");
+        db.execSQL("INSERT INTO ubicacion (nombre, ciudad, localidad, direccion, hora_apertura, hora_cierre, latitud, longitud) VALUES ('Estación Calle 80','Bogota','Calle 80', 'Cra. 72 #77a11','00:00','23:00','4.695016598554591','-74.09134293978623')");
+        db.execSQL("INSERT INTO ubicacion (nombre, ciudad, localidad, direccion, hora_apertura, hora_cierre, latitud, longitud) VALUES ('Estación Norte','Bogota','Norte', 'Cra. 45 #125 - 81','00:00','23:00', '4.707590657041848', '-74.054607424662')");
+        db.execSQL("INSERT INTO ubicacion (nombre, ciudad, localidad, direccion, hora_apertura, hora_cierre, latitud, longitud) VALUES ('Estación Americas','Bogota','Americas', 'a 9-98, Cra. 56 #9-2','00:00','23:00', '4.630540356660509', '-74.11159870332948')");
+        db.execSQL("INSERT INTO ubicacion (nombre, ciudad, localidad, direccion, hora_apertura, hora_cierre, latitud, longitud) VALUES ('Estación Dorado','Bogota','Dorado', 'Av. El Dorado #111-7 a 111-65','00:00','23:00', '4.695315223606339', '-74.14029354936687')");
+        db.execSQL("INSERT INTO ubicacion (nombre, ciudad, localidad, direccion, hora_apertura, hora_cierre, latitud, longitud) VALUES ('Estación 20 de Julio','Bogota', 'Cra. 10 #31-60','20 de Julio','00:00','21:00', '4.569330354021873', '-74.10121377902506')");
+        db.execSQL("INSERT INTO ubicacion (nombre, ciudad, localidad, direccion, hora_apertura, hora_cierre, latitud, longitud) VALUES ('Estación Tunal','Bogota','Tunal', 'Cl. 46 Sur # 24a-09','00:00','23:00', '4.582995655286697', '-74.12694299378377')");
+        db.execSQL("INSERT INTO ubicacion (nombre, ciudad, localidad, direccion, hora_apertura, hora_cierre, latitud, longitud) VALUES ('Estación Usme','Bogota','Usme', 'Dg. 49a Bis A Sur #1818','00:00','23:00', '4.527037329591021', '-74.12505479616249')");
+        db.execSQL("INSERT INTO ubicacion (nombre, ciudad, localidad, direccion, hora_apertura, hora_cierre, latitud, longitud) VALUES ('Estación Sur','Bogota','Sur', 'Cl. 57j Sur #72-70','00:00','23:00', '4.596546173453623', '-74.1669136495226')");
+        db.execSQL("INSERT INTO ubicacion (nombre, ciudad, localidad, direccion, hora_apertura, hora_cierre, latitud, longitud) VALUES ('Estación Caracas','Bogota','Caracas', 'Dg. 49a Bis A Sur #1818','00:00','23:00', '4.56820378908081', '-74.12588036016518')");
+        db.execSQL("INSERT INTO ubicacion (nombre, ciudad, localidad, direccion, hora_apertura, hora_cierre, latitud, longitud) VALUES ('Estación Centro','Bogota','Centro', 'Kr 13 #16a-77','00:00','23:00', '4.606509571976584', '-74.07687545333863')");
 
 
         for (int u = 1; u <= 11; u++){

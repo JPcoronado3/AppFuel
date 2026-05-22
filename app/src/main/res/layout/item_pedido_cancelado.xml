@@ -1,31 +1,44 @@
-<?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:padding="12dp"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
+    <!-- BOTÓN ARRIBA DERECHA -->
+    <Button
+        android:id="@+id/btnEliminar"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:text="✕"
+        android:textSize="14sp"
+        android:backgroundTint="#D32F2F"
+        android:textColor="#FFFFFF"
+        android:layout_alignParentEnd="true"/>
+
+    <!-- INFO -->
     <TextView
         android:id="@+id/tvInfoCancelado"
-        android:textSize="16sp"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:layout_below="@id/btnEliminar"
+        android:textSize="16sp"
+        android:layout_marginTop="8dp"/>
 
+    <!-- MOTIVO -->
     <TextView
         android:id="@+id/tvMotivo"
-        android:textColor="#FF0000"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:textColor="#FF0000"
+        android:layout_below="@id/tvInfoCancelado"/>
 
+    <!-- REAGENDAR -->
     <Button
         android:id="@+id/btnReagendar"
-        android:text="Reagendar cita"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:text="Reagendar"
+        android:layout_below="@id/tvMotivo"
+        android:layout_marginTop="8dp"/>
 
-    <Button
-        android:id="@+id/btnVolver"
-        android:text="Volver"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
-</LinearLayout>
+</RelativeLayout>

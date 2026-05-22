@@ -92,6 +92,30 @@
         android:layout_marginBottom="16dp"/>
 
     <Button
+        android:id="@+id/btnMapa"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Ver estaciones en mapa"/>
+
+    <Button
+        android:id="@+id/btnHistoricoDistribiudor"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Historial"/>
+
+    <Button
+        android:id="@+id/btnHistoricoOperador"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Historial"/>
+
+    <Button
+        android:id="@+id/btnSubsidios"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Subsidios"/>
+
+    <Button
         android:id="@+id/btnCerrarSesion"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

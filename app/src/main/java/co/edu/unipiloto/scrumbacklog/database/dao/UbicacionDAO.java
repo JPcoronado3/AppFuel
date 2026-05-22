@@ -5,6 +5,8 @@ import android.database.sqlite.SQLiteDatabase;
 
 import java.util.ArrayList;
 
+import co.edu.unipiloto.scrumbacklog.model.Estacion;
+
 public class UbicacionDAO {
     private SQLiteDatabase db;
 
@@ -59,5 +61,63 @@ public class UbicacionDAO {
                 "SELECT id_ubicacion AS _id, * FROM ubicacion",
                 null
         );
+    }
+
+    public ArrayList<Estacion> obtenerEstaciones() {
+
+        ArrayList<Estacion> lista = new ArrayList<>();
+
+        Cursor cursor = db.rawQuery(
+                "SELECT * FROM ubicacion",
+                null
+        );
+
+        while (cursor.moveToNext()) {
+
+            String nombre = cursor.getString(
+                    cursor.getColumnIndexOrThrow("nombre"));
+
+            String ciudad = cursor.getString(
+                    cursor.getColumnIndexOrThrow("ciudad"));
+
+            String localidad = cursor.getString(
+                    cursor.getColumnIndexOrThrow("localidad"));
+
+            String direccion = cursor.getString(
+                    cursor.getColumnIndexOrThrow("direccion"));
+
+            String apertura = cursor.getString(
+                    cursor.getColumnIndexOrThrow("hora_apertura"));
+
+            String cierre = cursor.getString(
+                    cursor.getColumnIndexOrThrow("hora_cierre"));
+
+            double latitud = cursor.getDouble(
+                    cursor.getColumnIndexOrThrow("latitud"));
+
+            double longitud = cursor.getDouble(
+                    cursor.getColumnIndexOrThrow("longitud"));
+
+            // SIMULACIÓN disponibilidad
+            boolean disponible = true;
+
+            lista.add(
+                    new Estacion(
+                            nombre,
+                            ciudad,
+                            localidad,
+                            latitud,
+                            longitud,
+                            direccion,
+                            apertura,
+                            cierre,
+                            disponible
+                    )
+            );
+        }
+
+        cursor.close();
+
+        return lista;
     }
     }

@@ -41,7 +41,6 @@ public class PedidoEntregaAdapter extends CursorAdapter {
         TextView tvContador = view.findViewById(R.id.tvContador);
         Button btnIniciar = view.findViewById(R.id.btnIniciarEntrega);
         Button btnCompletar = view.findViewById(R.id.btnCompletarEntrega);
-        Button btnVolver = view.findViewById(R.id.btnVolver);
 
         int id = cursor.getInt(cursor.getColumnIndexOrThrow("id_pedido"));
         int idUbicacion = cursor.getInt(cursor.getColumnIndexOrThrow("id_ubicacion")); // 🔥 CLAVE
@@ -101,11 +100,6 @@ public class PedidoEntregaAdapter extends CursorAdapter {
 
             Cursor nuevoCursor = pedidoDAO.obtenerPedidosAceptados();
             changeCursor(nuevoCursor);
-        });
-
-        btnVolver.setOnClickListener(v -> {
-            Intent intent = new Intent(context, MainActivity.class);
-            context.startActivity(intent);
         });
     }
 }

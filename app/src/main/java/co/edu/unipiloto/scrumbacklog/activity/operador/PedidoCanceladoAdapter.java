@@ -30,7 +30,7 @@ public class PedidoCanceladoAdapter extends CursorAdapter {
         TextView tvInfo = view.findViewById(R.id.tvInfoCancelado);
         TextView tvMotivo = view.findViewById(R.id.tvMotivo);
         Button btnReagendar = view.findViewById(R.id.btnReagendar);
-        Button btnVolver = view.findViewById(R.id.btnVolver);
+        Button btnEliminar= view.findViewById(R.id.btnEliminar);
 
         int id = cursor.getInt(cursor.getColumnIndexOrThrow("_id"));
 
@@ -60,9 +60,18 @@ public class PedidoCanceladoAdapter extends CursorAdapter {
             context.startActivity(intent);
         });
 
-        btnVolver.setOnClickListener(v -> {
-            Intent intent = new Intent(context, MainActivity.class);
-            context.startActivity(intent);
+        btnEliminar.setOnClickListener(v -> {
+
+            pedidoDAO.eliminarPedidoCancelado(id);
+
+            Cursor nuevoCursor = pedidoDAO.obtenerPedidosCancelados();
+            changeCursor(nuevoCursor);
+
+            Toast.makeText(context,
+                    "Pedido eliminado",
+                    Toast.LENGTH_SHORT).show();
         });
+
     }
-}
+
+    }

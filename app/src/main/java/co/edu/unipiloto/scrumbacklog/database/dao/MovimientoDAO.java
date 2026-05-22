@@ -141,4 +141,25 @@ public class MovimientoDAO {
 
         cursor.close();
     }
+
+    public Cursor obtenerMovimientosCursorPorUbicacion(int idUbicacion){
+
+        return db.rawQuery(
+
+                "SELECT " +
+                        "m.id_movimiento AS _id, " +
+                        "m.tipo_movimiento, " +
+                        "c.nombre AS combustible, " +
+                        "m.galones, " +
+                        "m.total, " +
+                        "m.fecha " +
+                        "FROM movimientos m " +
+                        "JOIN combustible c " +
+                        "ON m.id_combustible = c.id_combustible " +
+                        "WHERE m.id_ubicacion=? " +
+                        "ORDER BY m.id_movimiento DESC",
+
+                new String[]{String.valueOf(idUbicacion)}
+        );
+    }
 }

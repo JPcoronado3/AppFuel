@@ -26,14 +26,6 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Control de Inventario"
-            android:textSize="22sp"
-            android:textStyle="bold"
-            android:layout_marginBottom="16dp"/>
-
         <!-- COMBUSTIBLE -->
         <Spinner
             android:id="@+id/spFiltroCombustible"

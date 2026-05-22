@@ -15,7 +15,12 @@
             android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
             app:titleTextColor="@android:color/white"/>
 
-        <!-- CONTENIDO -->
+    <ListView xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/listViewPedidos"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
+        <!-- CONTENIDO
         <ScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent">
@@ -25,12 +30,9 @@
                 android:padding="20dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
-    <ListView xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/listViewPedidos"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+
         </LinearLayout>
 
-        </ScrollView>
+        </ScrollView> -->
 
         </LinearLayout>

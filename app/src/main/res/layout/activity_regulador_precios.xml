@@ -27,14 +27,6 @@
         android:orientation="vertical"
         android:padding="24dp">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Regulador de Precios"
-        android:textSize="22sp"
-        android:textStyle="bold"
-        android:layout_marginBottom="24dp"/>
-
     <!-- CIUDAD -->
 
     <TextView

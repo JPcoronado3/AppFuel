@@ -24,6 +24,9 @@ public class PedidosAEntregarActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_pedidos_aentregar);
+
         // ===== TOOLBAR =====
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -32,9 +35,6 @@ public class PedidosAEntregarActivity extends AppCompatActivity {
             getSupportActionBar().setTitle("Pedidos a Entregar");
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
-        // ===================
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_pedidos_aentregar);
 
         listView = findViewById(R.id.listViewEntregas);
 

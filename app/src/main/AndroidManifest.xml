@@ -12,6 +12,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.ScrumBacklog">
         <activity
+            android:name=".activity.cliente.MapaEstacionesActivity"
+            android:exported="false" />
+        <activity
             android:name=".activity.operador.RecepcionCombustibleActivity"
             android:exported="false" />
         <activity
@@ -50,13 +53,29 @@
             android:exported="false" />
         <activity android:name=".activity.distribuidor.PedidosPendientesActivity" />
         <activity android:name=".activity.cliente.HorariosActivity" />
+        <activity android:name=".activity.distribuidor.HistoricoDistribuidorActivity"/>
         <activity android:name=".activity.operador.PedidosCanceladosActivity" />
+        <activity
+            android:name=".activity.cliente.SubsidioActivity"/>
+
+        <service
+            android:name=".service.SubsidioService"
+            android:exported="false"/>
+
+        <activity
+            android:name=".activity.cliente.SubsidioAprobadoActivity"/>
+        <activity android:name=".activity.operador.HistorialOperadorActivity"/>
         <activity
             android:name=".activity.cliente.ConsultaActivity"
             android:exported="false" /> <!-- Selector de actividades -->
         <activity
             android:name=".activity.MainActivity"
             android:exported="false" />
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyD27rJ4kQ4wNYCdTWsc6FhxLdJ25VEAUCk"/>
     </application>
-
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
 </manifest>

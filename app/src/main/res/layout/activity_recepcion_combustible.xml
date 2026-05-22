@@ -12,11 +12,16 @@
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:background="?attr/colorPrimary"
+        android:background="#810615"
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
         app:titleTextColor="@android:color/white"/>
 
-    <!-- CONTENIDO -->
+    <ListView
+        android:id="@+id/listViewRecepcion"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
+    <!-- CONTENIDO
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -27,21 +32,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-    <TextView
-        android:text="Recepción de Combustible"
-        android:textSize="22sp"
-        android:textStyle="bold"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="10dp"/>
-
-    <ListView
-        android:id="@+id/listViewRecepcion"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
-
     </LinearLayout>
 
-    </ScrollView>
+    </ScrollView> -->
 
 </LinearLayout>

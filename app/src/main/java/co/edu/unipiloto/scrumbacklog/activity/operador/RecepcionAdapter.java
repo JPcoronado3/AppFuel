@@ -36,7 +36,6 @@ public class RecepcionAdapter extends CursorAdapter {
 
         TextView tvInfo = view.findViewById(R.id.tvInfoRecepcion);
         Button btnConfirmar = view.findViewById(R.id.btnConfirmar);
-        Button btnVolver = view.findViewById(R.id.btnVolver);
 
         int id = cursor.getInt(cursor.getColumnIndexOrThrow("id_pedido"));
         String ubicacion = cursor.getString(cursor.getColumnIndexOrThrow("ubicacion"));
@@ -62,12 +61,13 @@ public class RecepcionAdapter extends CursorAdapter {
             changeCursor(nuevoCursor);
 
             Intent intent = new Intent(context, InventarioActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            context.startActivity(intent);
-        });
 
-        btnVolver.setOnClickListener(v -> {
-            Intent intent = new Intent(context, MainActivity.class);
+            intent.putExtra("id_pedido", id);
+            intent.putExtra("combustible", combustible);
+            intent.putExtra("cantidad", cantidad);
+
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
             context.startActivity(intent);
         });
     }

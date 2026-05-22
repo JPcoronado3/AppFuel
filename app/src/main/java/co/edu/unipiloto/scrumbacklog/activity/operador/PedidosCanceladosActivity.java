@@ -23,6 +23,9 @@ public class PedidosCanceladosActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_pedidos_cancelados);
+
         // ===== TOOLBAR =====
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -31,10 +34,6 @@ public class PedidosCanceladosActivity extends AppCompatActivity {
             getSupportActionBar().setTitle("Pedidos Cancelados");
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
-        // ===================
-
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_pedidos_cancelados);
 
         listView = findViewById(R.id.listViewCancelados);
 

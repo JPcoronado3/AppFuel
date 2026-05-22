@@ -23,6 +23,9 @@ public class PedidosPendientesActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_pedidos_pendientes);
+
         // ===== TOOLBAR =====
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -31,9 +34,6 @@ public class PedidosPendientesActivity extends AppCompatActivity {
             getSupportActionBar().setTitle("Pedidos Pendientes");
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
-        // ===================
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_pedidos_pendientes);
 
         listView = findViewById(R.id.listViewPedidos);
 

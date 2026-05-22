@@ -2,6 +2,7 @@ package co.edu.unipiloto.scrumbacklog.activity.operador;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.widget.*;
 import androidx.appcompat.app.AppCompatActivity;
@@ -17,8 +18,15 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.*;
 import androidx.appcompat.widget.Toolbar;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.os.Build;
+import androidx.appcompat.app.AlertDialog;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 
 public class NotificadorActivity extends AppCompatActivity {
+    private static final String CHANNEL_ID = "canal_alertas";
 
     Spinner spCiudad, spZona;
     Button btnVerificar;
@@ -34,6 +42,14 @@ public class NotificadorActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+
+            requestPermissions(
+                    new String[]{android.Manifest.permission.POST_NOTIFICATIONS},
+                    1
+            );
+        }
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_notificador);
 
@@ -64,6 +80,8 @@ public class NotificadorActivity extends AppCompatActivity {
         configurarPorRol();
 
         btnVerificar.setOnClickListener(v -> verificarInventario());
+
+        crearCanalNotificacion();
     }
 
     // ===== BOTÓN ← TOOLBAR =====
@@ -108,6 +126,26 @@ public class NotificadorActivity extends AppCompatActivity {
         startActivity(intent);
 
         finish();
+    }
+
+    private void crearCanalNotificacion() {
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+
+            CharSequence nombre = "Alertas Combustible";
+            String descripcion = "Notificaciones de niveles críticos";
+            int importancia = NotificationManager.IMPORTANCE_HIGH;
+
+            NotificationChannel channel =
+                    new NotificationChannel(CHANNEL_ID, nombre, importancia);
+
+            channel.setDescription(descripcion);
+
+            NotificationManager notificationManager =
+                    getSystemService(NotificationManager.class);
+
+            notificationManager.createNotificationChannel(channel);
+        }
     }
 
     // =====================================================
@@ -191,18 +229,88 @@ public class NotificadorActivity extends AppCompatActivity {
         double extra = inventarioDAO.obtenerInventario("Extra", ciudad, zona);
 
         StringBuilder mensaje = new StringBuilder();
+        StringBuilder alertaPopup = new StringBuilder();
 
-        mensaje.append("📍 ").append(ciudad).append(" - ").append(zona).append("\n\n");
+        mensaje.append("📍 ")
+                .append(ciudad)
+                .append(" - ")
+                .append(zona)
+                .append("\n\n");
 
-        if (diesel < 1000) mensaje.append("⚠ Diesel crítico: ").append(diesel).append("\n");
-        if (corriente < 1000) mensaje.append("⚠ Corriente crítico: ").append(corriente).append("\n");
-        if (extra < 1000) mensaje.append("⚠ Extra crítico: ").append(extra).append("\n");
+        // =========================
+        // DIESEL
+        // =========================
+        if (diesel < 1000) {
 
-        if (diesel >= 1000 && corriente >= 1000 && extra >= 1000) {
+            mensaje.append("⚠ Diesel crítico: ")
+                    .append(diesel)
+                    .append(" galones\n");
+
+            alertaPopup.append("• Diesel crítico: ")
+                    .append(diesel)
+                    .append(" galones\n");
+
+            mostrarNotificacion("Diesel", diesel, ciudad, zona);
+        }
+
+        // =========================
+        // CORRIENTE
+        // =========================
+        if (corriente < 1000) {
+
+            mensaje.append("⚠ Corriente crítico: ")
+                    .append(corriente)
+                    .append(" galones\n");
+
+            alertaPopup.append("• Corriente crítico: ")
+                    .append(corriente)
+                    .append(" galones\n");
+
+            mostrarNotificacion("Corriente", corriente, ciudad, zona);
+        }
+
+        // =========================
+        // EXTRA
+        // =========================
+        if (extra < 1000) {
+
+            mensaje.append("⚠ Extra crítico: ")
+                    .append(extra)
+                    .append(" galones\n");
+
+            alertaPopup.append("• Extra crítico: ")
+                    .append(extra)
+                    .append(" galones\n");
+
+            mostrarNotificacion("Extra", extra, ciudad, zona);
+        }
+
+        // =========================
+        // TODO NORMAL
+        // =========================
+        if (diesel >= 1000 &&
+                corriente >= 1000 &&
+                extra >= 1000) {
+
             mensaje.append("✔ Inventario en niveles normales");
         }
 
         txtAlerta.setText(mensaje.toString());
+
+        // =========================
+        // MOSTRAR POPUP CENTRAL
+        // =========================
+        if (alertaPopup.length() > 0) {
+
+            new AlertDialog.Builder(this)
+                    .setTitle("⚠ ALERTA DE INVENTARIO")
+                    .setMessage(
+                            "Ubicación: " + ciudad + " - " + zona + "\n\n" +
+                                    alertaPopup.toString()
+                    )
+                    .setPositiveButton("Aceptar", null)
+                    .show();
+        }
     }
 
     // =====================================================
@@ -230,5 +338,42 @@ public class NotificadorActivity extends AppCompatActivity {
                 android.R.layout.simple_spinner_dropdown_item,
                 zonas
         ));
+    }
+
+    private void mostrarNotificacion(String combustible,
+                                     double cantidad,
+                                     String ciudad,
+                                     String zona) {
+
+        NotificationCompat.Builder builder =
+                new NotificationCompat.Builder(this, CHANNEL_ID)
+                        .setSmallIcon(R.drawable.ic_launcher_foreground)
+                        .setContentTitle("⚠ Combustible Crítico")
+                        .setContentText(
+                                combustible + " en " +
+                                        ciudad + " - " + zona +
+                                        " está por debajo de 1000 galones"
+                        )
+                        .setPriority(NotificationCompat.PRIORITY_HIGH)
+                        .setAutoCancel(true);
+
+        NotificationManagerCompat notificationManager =
+                NotificationManagerCompat.from(this);
+
+        int idNotificacion = (int) System.currentTimeMillis();
+
+        // ============================
+        // VALIDAR PERMISO ANDROID 13+
+        // ============================
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+
+            if (checkSelfPermission(android.Manifest.permission.POST_NOTIFICATIONS)
+                    != PackageManager.PERMISSION_GRANTED) {
+
+                return;
+            }
+        }
+
+        notificationManager.notify(idNotificacion, builder.build());
     }
 }

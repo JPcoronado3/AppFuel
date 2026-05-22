@@ -10,9 +10,13 @@ import androidx.appcompat.app.AppCompatActivity;
 import co.edu.unipiloto.scrumbacklog.R;
 import co.edu.unipiloto.scrumbacklog.activity.cliente.ConsultaActivity;
 import co.edu.unipiloto.scrumbacklog.activity.cliente.HorariosActivity;
+import co.edu.unipiloto.scrumbacklog.activity.cliente.MapaEstacionesActivity;
+import co.edu.unipiloto.scrumbacklog.activity.cliente.SubsidioActivity;
 import co.edu.unipiloto.scrumbacklog.activity.distribuidor.ControlInventarioActivity;
+import co.edu.unipiloto.scrumbacklog.activity.distribuidor.HistoricoDistribuidorActivity;
 import co.edu.unipiloto.scrumbacklog.activity.distribuidor.PedidosAEntregarActivity;
 import co.edu.unipiloto.scrumbacklog.activity.distribuidor.PedidosPendientesActivity;
+import co.edu.unipiloto.scrumbacklog.activity.operador.HistorialOperadorActivity;
 import co.edu.unipiloto.scrumbacklog.activity.operador.PedidosCanceladosActivity;
 import co.edu.unipiloto.scrumbacklog.activity.operador.ProgramarPedidoActivity;
 import co.edu.unipiloto.scrumbacklog.activity.logIn.LoginActivity;
@@ -26,7 +30,9 @@ public class MainActivity extends AppCompatActivity {
 
     Button btnConsulta, btnInventario, btnSalidas, btnNotificador,
             btnRegulador, btnControl, btnProgramarPedido , btnHorarios,
-            btnPedidosPendientes, btnPedidosCancelados, btnPedidosAEntregar, btnRecepcionCombustible, btnCerrarSesion;
+            btnPedidosPendientes, btnPedidosCancelados, btnPedidosAEntregar,
+            btnRecepcionCombustible,btnMapa,btnCerrarSesion, btnHistoricoDistribuidor,
+            btnHistorialOperador, btnSubsidios;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +52,10 @@ public class MainActivity extends AppCompatActivity {
         btnPedidosCancelados = findViewById(R.id.btnPedidosCancelados);
         btnPedidosAEntregar = findViewById(R.id.btnPedidosAEntregar);
         btnRecepcionCombustible = findViewById(R.id.btnRecepcionCombustible);
+        btnMapa = findViewById(R.id.btnMapa);
+        btnHistoricoDistribuidor = findViewById(R.id.btnHistoricoDistribiudor);
+        btnHistorialOperador = findViewById(R.id.btnHistoricoOperador);
+        btnSubsidios = findViewById(R.id.btnSubsidios);
         btnCerrarSesion = findViewById(R.id.btnCerrarSesion);
 
         configurarAccesoPorRol();
@@ -86,6 +96,17 @@ public class MainActivity extends AppCompatActivity {
         btnRecepcionCombustible.setOnClickListener(v ->
                 startActivity(new Intent(this, RecepcionCombustibleActivity.class)));
 
+        btnMapa.setOnClickListener(v ->
+                startActivity(new Intent(this, MapaEstacionesActivity.class)));
+
+        btnHistoricoDistribuidor.setOnClickListener(v ->
+                startActivity(new Intent(this, HistoricoDistribuidorActivity.class)));
+
+        btnHistorialOperador.setOnClickListener(v ->
+                startActivity(new Intent(this, HistorialOperadorActivity.class)));
+
+        btnSubsidios.setOnClickListener(v ->
+                startActivity(new Intent(this,SubsidioActivity.class)));
 
         btnCerrarSesion.setOnClickListener(view -> {
             SharedPreferences prefs = getSharedPreferences("sesion", MODE_PRIVATE);
@@ -126,6 +147,13 @@ public class MainActivity extends AppCompatActivity {
         btnPedidosAEntregar.setEnabled(false);
         btnRecepcionCombustible.setVisibility(View.GONE);
         btnRecepcionCombustible.setEnabled(false);
+        btnMapa.setVisibility(View.GONE);
+        btnMapa.setEnabled(false);
+        btnHistoricoDistribuidor.setVisibility(View.GONE);
+        btnHistoricoDistribuidor.setEnabled(false);
+        btnHistorialOperador.setVisibility(View.GONE);
+        btnHistorialOperador.setEnabled(false);
+
 
         if (rol == null) return;
 
@@ -143,8 +171,6 @@ public class MainActivity extends AppCompatActivity {
                 break;
 
             case "operador": // estación de servicio
-                btnConsulta.setVisibility(View.VISIBLE);
-                btnConsulta.setEnabled(true);
                 btnInventario.setVisibility(View.VISIBLE);
                 btnInventario.setEnabled(true);
                 btnSalidas.setVisibility(View.VISIBLE);
@@ -161,6 +187,8 @@ public class MainActivity extends AppCompatActivity {
                 btnPedidosCancelados.setEnabled(true);
                 btnRecepcionCombustible.setVisibility(View.VISIBLE);
                 btnRecepcionCombustible.setEnabled(true);
+                btnHistorialOperador.setVisibility(View.VISIBLE);
+                btnHistorialOperador.setEnabled(true);
                 break;
 
             case "cliente":
@@ -168,6 +196,8 @@ public class MainActivity extends AppCompatActivity {
                 btnConsulta.setEnabled(true);
                 btnHorarios.setVisibility(View.VISIBLE);
                 btnHorarios.setEnabled(true);
+                btnMapa.setVisibility(View.VISIBLE);
+                btnMapa.setEnabled(true);
                 break;
 
             case "distribuidor":
@@ -179,6 +209,10 @@ public class MainActivity extends AppCompatActivity {
                 btnPedidosPendientes.setEnabled(true);
                 btnPedidosAEntregar.setVisibility(View.VISIBLE);
                 btnPedidosAEntregar.setEnabled(true);
+                btnHistoricoDistribuidor.setVisibility(View.VISIBLE);
+                btnHistoricoDistribuidor.setEnabled(true);
+                btnMapa.setVisibility(View.VISIBLE);
+                btnMapa.setEnabled(true);
                 break;
         }
     }

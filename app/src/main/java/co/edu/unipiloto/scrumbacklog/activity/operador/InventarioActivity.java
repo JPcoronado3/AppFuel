@@ -15,21 +15,23 @@ import java.util.Locale;
 import co.edu.unipiloto.scrumbacklog.R;
 import co.edu.unipiloto.scrumbacklog.activity.logIn.LoginActivity;
 import co.edu.unipiloto.scrumbacklog.database.DAOFactory;
+import co.edu.unipiloto.scrumbacklog.database.DatabaseHelper;
 import co.edu.unipiloto.scrumbacklog.database.dao.CombustibleDAO;
 import co.edu.unipiloto.scrumbacklog.database.dao.InventarioDAO;
 import co.edu.unipiloto.scrumbacklog.database.dao.MovimientoDAO;
+import co.edu.unipiloto.scrumbacklog.database.dao.PedidoDAO;
 import co.edu.unipiloto.scrumbacklog.database.dao.PrecioDAO;
 import co.edu.unipiloto.scrumbacklog.database.dao.UbicacionDAO;
 import co.edu.unipiloto.scrumbacklog.database.dao.UsuarioDAO;
 import android.widget.*;
 import androidx.appcompat.widget.Toolbar;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 
 
 public class InventarioActivity extends AppCompatActivity {
 
     Spinner spCombustible, spCiudad, spZona;
-    EditText etCantidad;
-    Button btnAgregar;
     TextView txtInventarioTotal, txtInventarioDiesel, txtInventarioCorriente, txtInventarioExtra;
 
     DAOFactory factory;
@@ -39,6 +41,9 @@ public class InventarioActivity extends AppCompatActivity {
     PrecioDAO precioDAO;
     UbicacionDAO ubicacionDAO;
     UsuarioDAO usuarioDAO;
+    ListView listPedidosRecibidos;
+
+    PedidoDAO pedidoDAO;
 
     String rol;
     int idUbicacion;
@@ -73,12 +78,16 @@ public class InventarioActivity extends AppCompatActivity {
         spCombustible = findViewById(R.id.spCombustible);
         spCiudad = findViewById(R.id.spCiudad);
         spZona = findViewById(R.id.spZona);
-        etCantidad = findViewById(R.id.etCantidad);
-        btnAgregar = findViewById(R.id.btnAgregar);
         txtInventarioTotal = findViewById(R.id.txtInventarioTotal);
         txtInventarioDiesel = findViewById(R.id.txtInventarioDiesel);
         txtInventarioCorriente = findViewById(R.id.txtInventarioCorriente);
         txtInventarioExtra = findViewById(R.id.txtInventarioExtra);
+        listPedidosRecibidos = findViewById(R.id.listPedidosRecibidos);
+
+        DatabaseHelper dbHelper = new DatabaseHelper(this);
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+
+        pedidoDAO = new PedidoDAO(db);
 
         cargarCombustiblesSpinner();
 
@@ -121,8 +130,8 @@ public class InventarioActivity extends AppCompatActivity {
 
             actualizarInventarioOperador();
         }
+        cargarPedidosPendientes();
 
-        btnAgregar.setOnClickListener(view -> registrarEntrada());
     }
 
     // ===== TOOLBAR BACK =====
@@ -167,59 +176,6 @@ public class InventarioActivity extends AppCompatActivity {
         startActivity(intent);
 
         finish();
-    }
-
-    // ========================= LÓGICA ORIGINAL =========================
-
-    private void registrarEntrada() {
-
-        if (spCombustible.getSelectedItem() == null) {
-            Toast.makeText(this, "Seleccione combustible", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        String cantidadTexto = etCantidad.getText().toString().trim();
-
-        if (cantidadTexto.isEmpty()) {
-            Toast.makeText(this, "Ingrese cantidad", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        double cantidad;
-
-        try {
-            cantidad = Double.parseDouble(cantidadTexto);
-        } catch (Exception e) {
-            Toast.makeText(this, "Cantidad inválida", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        String tipo = spCombustible.getSelectedItem().toString();
-        String fecha = new SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault()).format(new Date());
-
-        boolean resultado;
-
-        if (rol.equalsIgnoreCase("ADMIN")) {
-
-            String ciudad = spCiudad.getSelectedItem().toString();
-            String zona = spZona.getSelectedItem().toString();
-
-            double precio = precioDAO.obtenerPrecioZona(tipo, ciudad, zona);
-            int idUbic = ubicacionDAO.obtenerIdUbicacion(ciudad, zona);
-
-            resultado = movimientoDAO.registrarEntradaPorUbicacion(tipo, cantidad, precio, fecha, idUbic);
-
-        } else {
-            resultado = movimientoDAO.registrarEntradaPorUbicacion(tipo, cantidad, 0, fecha, idUbicacion);
-        }
-
-        if (resultado) {
-            actualizarUI();
-            etCantidad.setText("");
-            Toast.makeText(this, "Entrada registrada", Toast.LENGTH_SHORT).show();
-        } else {
-            Toast.makeText(this, "Error al registrar", Toast.LENGTH_SHORT).show();
-        }
     }
 
     private void actualizarInventarioAdmin() {
@@ -273,5 +229,23 @@ public class InventarioActivity extends AppCompatActivity {
         spZona.setAdapter(new ArrayAdapter<>(this,
                 android.R.layout.simple_spinner_item,
                 ubicacionDAO.obtenerZonas(ciudad)));
+    }
+
+    private void cargarPedidosPendientes() {
+
+        Cursor cursor = pedidoDAO.obtenerPedidosRecibidosPendientes(idUbicacion);
+
+        PedidoInventarioAdapter adapter =
+                new PedidoInventarioAdapter(
+                        this,
+                        cursor,
+                        movimientoDAO,
+                        pedidoDAO,
+                        inventarioDAO,
+                        idUbicacion,
+                        this
+                );
+
+        listPedidosRecibidos.setAdapter(adapter);
     }
 }

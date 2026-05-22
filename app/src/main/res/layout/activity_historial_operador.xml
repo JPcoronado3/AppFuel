@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -6,36 +7,18 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <!-- TOOLBAR -->
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:background="?attr/colorPrimary"
-        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+        app:title="Historial Operador"
         app:titleTextColor="@android:color/white"/>
 
     <ListView
-        android:id="@+id/listViewEntregas"
+        android:id="@+id/listViewMovimientos"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
-
-
-
-    <!-- CONTENIDO
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <LinearLayout
-            android:orientation="vertical"
-            android:padding="20dp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-
-        </LinearLayout>
-
-    </ScrollView> -->
+        android:layout_height="match_parent"
+        android:dividerHeight="8dp"/>
 
 </LinearLayout>

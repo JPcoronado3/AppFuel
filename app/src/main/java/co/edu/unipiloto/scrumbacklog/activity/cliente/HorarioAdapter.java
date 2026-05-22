@@ -29,7 +29,6 @@ public class HorarioAdapter extends CursorAdapter {
         TextView tvNombre = view.findViewById(R.id.tvNombre);
         TextView tvHorario = view.findViewById(R.id.tvHorario);
         TextView tvEstado = view.findViewById(R.id.tvEstado);
-        Button btnVolver = view.findViewById(R.id.btnVolver);
 
 
         String nombre = cursor.getString(cursor.getColumnIndexOrThrow("nombre"));
@@ -54,10 +53,5 @@ public class HorarioAdapter extends CursorAdapter {
         } catch (Exception e) {
             tvEstado.setText("Horario no disponible");
         }
-
-        btnVolver.setOnClickListener(v -> {
-            Intent intent = new Intent(context, MainActivity.class);
-            context.startActivity(intent);
-        });
     }
 }

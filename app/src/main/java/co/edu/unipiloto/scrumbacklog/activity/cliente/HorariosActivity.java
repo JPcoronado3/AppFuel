@@ -22,6 +22,9 @@ public class HorariosActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_horarios);
+
         // ===== TOOLBAR =====
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -30,10 +33,6 @@ public class HorariosActivity extends AppCompatActivity {
             getSupportActionBar().setTitle("Horarios Estaciones");
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
-        // ===================
-
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_horarios);
 
         listView = findViewById(R.id.listViewHorarios);
 

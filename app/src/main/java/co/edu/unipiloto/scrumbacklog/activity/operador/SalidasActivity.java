@@ -22,6 +22,8 @@ import android.view.MenuItem;
 import android.widget.*;
 import androidx.appcompat.widget.Toolbar;
 
+import androidx.appcompat.app.AlertDialog;
+
 public class SalidasActivity extends AppCompatActivity {
 
     TextView txtInventarioDisponible;
@@ -315,6 +317,62 @@ public class SalidasActivity extends AppCompatActivity {
             actualizarInventarioUI();
 
             Toast.makeText(this, "Salida registrada", Toast.LENGTH_SHORT).show();
+
+            // =========================================
+            // VERIFICAR INVENTARIO CRÍTICO AUTOMÁTICO
+            // =========================================
+
+            double inventarioActual;
+
+            String ciudadActual;
+            String zonaActual;
+
+            if (rol.equalsIgnoreCase("OPERADOR")) {
+
+                String[] ubicacion = usuarioDAO.obtenerUbicacionUsuario(idUbicacion);
+
+                ciudadActual = ubicacion[0];
+                zonaActual = ubicacion[1];
+
+                inventarioActual =
+                        inventarioDAO.obtenerInventarioPorUbicacion(
+                                tipo,
+                                idUbicacion
+                        );
+
+            } else {
+
+                ciudadActual = spCiudad.getSelectedItem().toString();
+                zonaActual = spZona.getSelectedItem().toString();
+
+                inventarioActual =
+                        inventarioDAO.obtenerInventario(
+                                tipo,
+                                ciudadActual,
+                                zonaActual
+                        );
+            }
+
+            // =========================================
+            // POPUP CENTRAL SI INVENTARIO < 1000
+            // =========================================
+
+            if (inventarioActual < 1000) {
+
+                new AlertDialog.Builder(this)
+                        .setTitle("⚠ ALERTA DE INVENTARIO")
+                        .setMessage(
+                                "El combustible " + tipo +
+                                        " quedó en nivel crítico.\n\n" +
+                                        "Ubicación: " +
+                                        ciudadActual + " - " + zonaActual + "\n\n" +
+                                        "Inventario actual: " +
+                                        inventarioActual + " galones"
+                        )
+                        .setPositiveButton("Aceptar", null)
+                        .show();
+            }
+
         } else {
             Toast.makeText(this, "Error al registrar", Toast.LENGTH_SHORT).show();
         }

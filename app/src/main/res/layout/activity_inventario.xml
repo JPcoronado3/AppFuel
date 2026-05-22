@@ -61,29 +61,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
 
-        <!-- Cantidad -->
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Cantidad en galones"
-            android:layout_marginTop="16dp"/>
-
-        <EditText
-            android:id="@+id/etCantidad"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Ingrese cantidad"
-            android:inputType="numberDecimal"
-            android:maxLines="1"/>
-
-        <!-- Botón agregar -->
-        <Button
-            android:id="@+id/btnAgregar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Agregar Inventario"
-            android:layout_marginTop="16dp"/>
-
         <!-- Resultados -->
         <TextView
             android:id="@+id/txtInventarioDiesel"
@@ -117,6 +94,19 @@
             android:textSize="20sp"
             android:textStyle="bold"
             android:layout_marginTop="16dp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Pedidos recibidos pendientes"
+                android:textStyle="bold"
+                android:textSize="18sp"
+                android:layout_marginTop="24dp"/>
+
+            <ListView
+                android:id="@+id/listPedidosRecibidos"
+                android:layout_width="match_parent"
+                android:layout_height="300dp"/>
 
         </LinearLayout>
 
